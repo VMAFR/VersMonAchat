@@ -5,21 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>VMA | VersMonAchat</title>
 
-  <!-- Configuration PWA & Icône sur téléphone (Apple & Android) -->
+  <!-- Configuration PWA & Icône sur téléphone -->
   <meta name="theme-color" content="#182a46">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="VersMonAchat">
 
-  <!-- Favicon et Logo Icône Écran d'accueil (Pointe vers logo.png) -->
+  <!-- Favicon et Logo Icône (logo.png) -->
   <link rel="icon" type="image/png" href="logo.png">
   <link rel="apple-touch-icon" href="logo.png">
 
   <!-- Manifest Web App -->
   <link rel="manifest" href='data:application/manifest+json,{"name":"VersMonAchat","short_name":"VMA","start_url":".","display":"standalone","background_color":"#ffffff","theme_color":"#182a46","icons":[{"src":"logo.png","sizes":"512x512","type":"image/png"}]}'>
 
-  <!-- Script pour les confettis -->
+  <!-- Script pour les confettis et Chart.js pour les graphiques -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
   <style>
     :root {
       --primary: #182a46;        /* Bleu Marine VMA */
@@ -30,7 +32,8 @@
       --card: #ffffff;
       --text: #182a46;
       --text-muted: #64748b;
-      --success: #10b981;
+      --danger: #ef4444;
+      --info: #3b82f6;
     }
 
     * {
@@ -53,7 +56,7 @@
     .container {
       background: var(--card);
       width: 100%;
-      max-width: 440px;
+      max-width: 460px;
       padding: 24px 24px 20px 24px;
       border-radius: 20px;
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
@@ -169,6 +172,18 @@
       box-shadow: 0 2px 8px rgba(24, 42, 70, 0.25);
     }
 
+    .tab-btn.budget-tab {
+      background: #eff6ff;
+      color: #2563eb;
+      border-color: #bfdbfe;
+    }
+
+    .tab-btn.budget-tab.active {
+      background: #2563eb;
+      color: white;
+      border-color: #2563eb;
+    }
+
     .tab-btn.add-btn {
       background: #eaf5f0;
       color: var(--accent);
@@ -183,7 +198,7 @@
     }
 
     .form-group {
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
 
     label {
@@ -201,10 +216,10 @@
     select,
     textarea {
       width: 100%;
-      padding: 12px;
+      padding: 11px;
       border: 1px solid #d1d5db;
       border-radius: 10px;
-      font-size: 1rem;
+      font-size: 0.95rem;
       outline: none;
       transition: border-color 0.2s;
       background: #fff;
@@ -261,7 +276,7 @@
     }
 
     .btn-danger {
-      background-color: #ef4444;
+      background-color: var(--danger);
       margin-top: 20px;
     }
 
@@ -344,9 +359,51 @@
       color: var(--text-muted);
     }
 
+    /* CARTES DE RÉSUMÉ DU BUDGET */
+    .budget-summary-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .budget-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 12px;
+      text-align: center;
+    }
+
+    .budget-card-title {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .budget-card-value {
+      font-size: 1.1rem;
+      font-weight: 800;
+    }
+
+    .value-savings { color: #2563eb; }
+    .value-income { color: var(--accent); }
+    .value-expense { color: var(--danger); }
+    .value-net { color: var(--primary); }
+
+    /* ZONE DU GRAPHIQUE CAMEMBERT */
+    .chart-box {
+      width: 100%;
+      max-width: 220px;
+      margin: 16px auto;
+      position: relative;
+    }
+
     .history-list {
       margin-top: 10px;
-      max-height: 110px;
+      max-height: 140px;
       overflow-y: auto;
       list-style: none;
     }
@@ -354,10 +411,33 @@
     .history-item {
       display: flex;
       justify-content: space-between;
+      align-items: center;
       padding: 8px 0;
       border-bottom: 1px solid #f1f5f9;
       font-size: 0.875rem;
     }
+
+    .item-tag {
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 6px;
+      text-transform: uppercase;
+    }
+    .tag-savings { background: #dbeafe; color: #1e40af; }
+    .tag-income { background: #d1fae5; color: #065f46; }
+    .tag-expense { background: #fee2e2; color: #991b1b; }
+
+    .btn-del-item {
+      background: none;
+      border: none;
+      color: #94a3b8;
+      font-size: 1rem;
+      cursor: pointer;
+      padding: 0 4px;
+      width: auto;
+    }
+    .btn-del-item:hover { color: var(--danger); }
 
     .app-footer {
       margin-top: 24px;
@@ -460,11 +540,62 @@
       </button>
     </div>
 
-    <!-- BARRE D'ONGLETS POUR NAVIGUER ENTRE LES OBJECTIFS -->
+    <!-- BARRE D'ONGLETS POUR NAVIGUER (BUDGET / OBJECTIFS) -->
     <div id="tabs-container" class="tabs-container"></div>
 
+    <!-- ÉCRAN 0 : CALCULATEUR DE BUDGET GLOBAL -->
+    <div id="budget-view">
+      <h1>📊 Mon Budget Global</h1>
+
+      <div class="budget-summary-grid">
+        <div class="budget-card">
+          <div class="budget-card-title">Épargne / Livrets</div>
+          <div id="b-total-savings" class="budget-card-value value-savings">0 €</div>
+        </div>
+        <div class="budget-card">
+          <div class="budget-card-title">Rentrées / mois</div>
+          <div id="b-total-income" class="budget-card-value value-income">+0 €</div>
+        </div>
+        <div class="budget-card">
+          <div class="budget-card-title">Dépenses / mois</div>
+          <div id="b-total-expenses" class="budget-card-value value-expense">-0 €</div>
+        </div>
+        <div class="budget-card">
+          <div class="budget-card-title">Reste disponible</div>
+          <div id="b-net-monthly" class="budget-card-value value-net">0 €</div>
+        </div>
+      </div>
+
+      <!-- CAMEMBERT DU BUDGET GLOBAL -->
+      <div class="chart-box">
+        <canvas id="budgetPieChart"></canvas>
+      </div>
+
+      <form id="budget-item-form" style="background: #f8fafc; padding: 14px; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 16px;">
+        <h3 style="font-size: 0.85rem; color: var(--primary); margin-bottom: 10px;">➕ Ajouter un compte, revenu ou dépense</h3>
+        
+        <div class="form-group">
+          <select id="b-item-type">
+            <option value="savings">🏦 Épargne / Compte (ex: Livret A, LDD...)</option>
+            <option value="income">📈 Rentrée d'argent (ex: Salaire, Aides...)</option>
+            <option value="expense">📉 Dépense / Charge (ex: Loyer, Abonnements...)</option>
+          </select>
+        </div>
+
+        <div style="display: flex; gap: 8px;">
+          <input type="text" id="b-item-name" placeholder="Nom (ex: Livret A, Loyer...)" required style="flex: 2;">
+          <input type="number" id="b-item-amount" min="0" step="any" placeholder="Montant (€)" required style="flex: 1;">
+        </div>
+
+        <button type="submit" class="btn-accent" style="margin-top: 10px; padding: 10px;">Ajouter à mon budget</button>
+      </form>
+
+      <h3 style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px;">Détail de vos comptes et charges</h3>
+      <ul id="budget-items-list" class="history-list"></ul>
+    </div>
+
     <!-- ÉCRAN 1 : FORMULAIRE DE CRÉATION D'UN OBJECTIF -->
-    <div id="setup-view">
+    <div id="setup-view" class="hidden">
       <h1>🎯 Nouvel Objectif</h1>
       <form id="goal-form">
         <div class="form-group">
@@ -482,9 +613,9 @@
           <input type="text" id="goal-emoji" value="🎯" maxlength="4">
           <div class="emoji-presets">
             <button type="button" class="emoji-btn" onclick="selectEmoji('🎮')">🎮</button>
+            <button type="button" class="emoji-btn" onclick="selectEmoji('🏠')">🏠</button>
             <button type="button" class="emoji-btn" onclick="selectEmoji('🚗')">🚗</button>
             <button type="button" class="emoji-btn" onclick="selectEmoji('✈️')">✈️</button>
-            <button type="button" class="emoji-btn" onclick="selectEmoji('🏠')">🏠</button>
             <button type="button" class="emoji-btn" onclick="selectEmoji('📱')">📱</button>
             <button type="button" class="emoji-btn" onclick="selectEmoji('👟')">👟</button>
             <button type="button" class="emoji-btn" onclick="selectEmoji('🛍️')">🛍️</button>
@@ -500,7 +631,7 @@
       </form>
     </div>
 
-    <!-- ÉCRAN 2 : TABLEAU DE BORD DU SUIVI -->
+    <!-- ÉCRAN 2 : TABLEAU DE BORD D'UN OBJECTIF -->
     <div id="dashboard-view" class="hidden">
       
       <div class="visual-header">
@@ -519,6 +650,11 @@
           <div id="progress-bar" class="progress-bar"></div>
         </div>
         <div id="display-percent" class="percentage">0% complété</div>
+
+        <!-- CAMEMBERT DE L'OBJECTIF INDIVIDUEL -->
+        <div class="chart-box">
+          <canvas id="goalPieChart"></canvas>
+        </div>
       </div>
 
       <form id="deposit-form" class="form-group">
@@ -617,16 +753,32 @@
   <script>
     let state = JSON.parse(localStorage.getItem('savingsDataMulti')) || {
       goals: [],
-      activeGoalId: null
+      activeGoalId: 'BUDGET',
+      budget: {
+        items: [
+          { id: '1', type: 'savings', name: 'Livret A', amount: 10000 },
+          { id: '2', type: 'income', name: 'Salaire', amount: 2000 },
+          { id: '3', type: 'expense', name: 'Loyer', amount: 700 }
+        ]
+      }
     };
 
-    let deferredPrompt = null;
+    if (!state.budget) {
+      state.budget = { items: [] };
+    }
 
+    let deferredPrompt = null;
+    let goalChartInstance = null;
+    let budgetChartInstance = null;
+
+    const budgetView = document.getElementById('budget-view');
     const setupView = document.getElementById('setup-view');
     const dashboardView = document.getElementById('dashboard-view');
     const tabsContainer = document.getElementById('tabs-container');
+    
     const goalForm = document.getElementById('goal-form');
     const depositForm = document.getElementById('deposit-form');
+    const budgetItemForm = document.getElementById('budget-item-form');
     const resetBtn = document.getElementById('reset-btn');
     
     const modalOverlay = document.getElementById('modal-overlay');
@@ -668,7 +820,7 @@
       try {
         localStorage.setItem('savingsDataMulti', JSON.stringify(state));
       } catch (e) {
-        alert("L'image est trop lourde pour la mémoire locale, essaye avec une photo plus légère !");
+        alert("Problème de mémoire locale : privilégiez des images légères.");
       }
     }
 
@@ -729,16 +881,170 @@
       modalOverlay.classList.remove('hidden');
     }
 
-    function renderTabs() {
-      tabsContainer.innerHTML = '';
+    // GRAPHIQUE CAMEMBERT OBJECTIF
+    function updateGoalPieChart(currentAmount, targetAmount) {
+      const ctx = document.getElementById('goalPieChart').getContext('2d');
+      const remainingAmount = Math.max(0, targetAmount - currentAmount);
 
-      if (state.goals.length === 0) {
-        tabsContainer.classList.add('hidden');
-        return;
+      if (goalChartInstance) {
+        goalChartInstance.destroy();
       }
 
+      goalChartInstance = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Économisé (€)', 'Reste à financer (€)'],
+          datasets: [{
+            data: [currentAmount, remainingAmount],
+            backgroundColor: ['#489b74', '#182a46'],
+            borderWidth: 2,
+            borderColor: '#ffffff'
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: { boxWidth: 12, font: { size: 11 } }
+            }
+          }
+        }
+      });
+    }
+
+    // GRAPHIQUE CAMEMBERT BUDGET GLOBAL
+    function updateBudgetPieChart(savings, income, expenses) {
+      const ctx = document.getElementById('budgetPieChart').getContext('2d');
+
+      if (budgetChartInstance) {
+        budgetChartInstance.destroy();
+      }
+
+      budgetChartInstance = new Chart(ctx, {
+        type: 'pie',
+        data: {
+          labels: ['Épargne (€)', 'Revenus (€)', 'Dépenses (€)'],
+          datasets: [{
+            data: [savings, income, expenses],
+            backgroundColor: ['#3b82f6', '#10b981', '#ef4444'],
+            borderWidth: 2,
+            borderColor: '#ffffff'
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: { boxWidth: 12, font: { size: 11 } }
+            }
+          }
+        }
+      });
+    }
+
+    function renderBudget() {
+      const items = state.budget.items || [];
+
+      let totalSavings = 0;
+      let totalIncome = 0;
+      let totalExpenses = 0;
+
+      items.forEach(item => {
+        if (item.type === 'savings') totalSavings += item.amount;
+        if (item.type === 'income') totalIncome += item.amount;
+        if (item.type === 'expense') totalExpenses += item.amount;
+      });
+
+      const netMonthly = totalIncome - totalExpenses;
+
+      document.getElementById('b-total-savings').textContent = totalSavings.toLocaleString('fr-FR') + ' €';
+      document.getElementById('b-total-income').textContent = '+' + totalIncome.toLocaleString('fr-FR') + ' €';
+      document.getElementById('b-total-expenses').textContent = '-' + totalExpenses.toLocaleString('fr-FR') + ' €';
+      
+      const netElem = document.getElementById('b-net-monthly');
+      netElem.textContent = (netMonthly >= 0 ? '+' : '') + netMonthly.toLocaleString('fr-FR') + ' €';
+      netElem.className = 'budget-card-value ' + (netMonthly >= 0 ? 'value-income' : 'value-expense');
+
+      updateBudgetPieChart(totalSavings, totalIncome, totalExpenses);
+
+      const listElem = document.getElementById('budget-items-list');
+      listElem.innerHTML = '';
+
+      items.forEach(item => {
+        const li = document.createElement('li');
+        li.className = 'history-item';
+
+        let tagClass = 'tag-savings';
+        let typeName = 'Épargne';
+        let prefix = '';
+
+        if (item.type === 'income') {
+          tagClass = 'tag-income';
+          typeName = 'Revenu';
+          prefix = '+';
+        } else if (item.type === 'expense') {
+          tagClass = 'tag-expense';
+          typeName = 'Dépense';
+          prefix = '-';
+        }
+
+        li.innerHTML = `
+          <div>
+            <span class="item-tag ${tagClass}">${typeName}</span>
+            <strong style="margin-left: 6px;">${item.name}</strong>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span><strong>${prefix}${item.amount.toLocaleString('fr-FR')} €</strong></span>
+            <button class="btn-del-item" onclick="deleteBudgetItem('${item.id}')">&times;</button>
+          </div>
+        `;
+        listElem.appendChild(li);
+      });
+    }
+
+    function deleteBudgetItem(id) {
+      state.budget.items = state.budget.items.filter(i => i.id !== id);
+      saveState();
+      renderBudget();
+    }
+
+    budgetItemForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const type = document.getElementById('b-item-type').value;
+      const name = document.getElementById('b-item-name').value;
+      const amount = parseFloat(document.getElementById('b-item-amount').value);
+
+      if (name && amount > 0) {
+        state.budget.items.push({
+          id: Date.now().toString(),
+          type,
+          name,
+          amount
+        });
+        saveState();
+        renderBudget();
+        budgetItemForm.reset();
+      }
+    });
+
+    function renderTabs() {
+      tabsContainer.innerHTML = '';
       tabsContainer.classList.remove('hidden');
 
+      // 1. ONGLET FIXE BUDGET GLOBAL
+      const budgetBtn = document.createElement('button');
+      budgetBtn.className = `tab-btn budget-tab ${state.activeGoalId === 'BUDGET' ? 'active' : ''}`;
+      budgetBtn.innerHTML = `<span>📊</span> <span>Budget Global</span>`;
+      budgetBtn.onclick = () => {
+        state.activeGoalId = 'BUDGET';
+        saveState();
+        render();
+      };
+      tabsContainer.appendChild(budgetBtn);
+
+      // 2. ONGLETS DES OBJECTIFS
       state.goals.forEach(goal => {
         const btn = document.createElement('button');
         btn.className = `tab-btn ${goal.id === state.activeGoalId ? 'active' : ''}`;
@@ -751,9 +1057,10 @@
         tabsContainer.appendChild(btn);
       });
 
+      // 3. ONGLET AJOUTER UN OBJECTIF ("Nouvel objectif")
       const addBtn = document.createElement('button');
       addBtn.className = `tab-btn add-btn ${state.activeGoalId === 'NEW' ? 'active' : ''}`;
-      addBtn.innerHTML = `<span>➕</span> <span>Nouveau</span>`;
+      addBtn.innerHTML = `<span>➕</span> <span>Nouvel objectif</span>`;
       addBtn.onclick = () => {
         state.activeGoalId = 'NEW';
         saveState();
@@ -765,6 +1072,15 @@
     function render() {
       renderTabs();
 
+      if (state.activeGoalId === 'BUDGET') {
+        budgetView.classList.remove('hidden');
+        setupView.classList.add('hidden');
+        dashboardView.classList.add('hidden');
+        renderBudget();
+        return;
+      }
+
+      budgetView.classList.add('hidden');
       const activeGoal = state.goals.find(g => g.id === state.activeGoalId);
 
       if (!activeGoal || state.activeGoalId === 'NEW') {
@@ -797,6 +1113,8 @@
         const percentage = Math.min(100, (activeGoal.current / activeGoal.target) * 100);
         document.getElementById('progress-bar').style.width = percentage + '%';
         document.getElementById('display-percent').textContent = percentage.toFixed(1) + '% complété';
+
+        updateGoalPieChart(activeGoal.current, activeGoal.target);
 
         const historyList = document.getElementById('history-list');
         historyList.innerHTML = '';
@@ -885,7 +1203,6 @@
       const type = document.getElementById('contact-type').value;
       const message = document.getElementById('contact-message').value;
 
-      // ADRESSE DESTINATAIRE : fabiodesign63000@gmail.com
       const mailtoUrl = `mailto:fabiodesign63000@gmail.com?subject=${encodeURIComponent(type)}&body=${encodeURIComponent("Email: " + email + "\n\nMessage:\n" + message)}`;
       window.location.href = mailtoUrl;
 
@@ -902,7 +1219,7 @@
       const activeGoal = state.goals.find(g => g.id === state.activeGoalId);
       if (activeGoal && confirm(`Voulez-vous vraiment supprimer l'objectif "${activeGoal.title}" ?`)) {
         state.goals = state.goals.filter(g => g.id !== state.activeGoalId);
-        state.activeGoalId = state.goals.length > 0 ? state.goals[0].id : null;
+        state.activeGoalId = 'BUDGET';
         saveState();
         render();
       }

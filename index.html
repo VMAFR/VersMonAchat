@@ -11,12 +11,12 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="VersMonAchat">
 
-  <!-- Favicon et Logo Icône Écran d'accueil -->
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><rect width='200' height='200' rx='40' fill='%23ffffff'/><g transform='translate(0, 10)'><circle cx='100' cy='70' r='55' fill='%23EAEFEA'/><path d='M100 25 L145 95 L55 95 Z' fill='%23182A46'/><path d='M100 25 L145 95 L100 95 Z' fill='%23101C30'/><path d='M100 25 L80 95 L55 95 Z' fill='%23243B5E'/><path d='M100 90 Q92 75 100 60 Q108 45 100 25' stroke='%23489B74' stroke-width='5' stroke-linecap='round' fill='none'/><line x1='100' y1='25' x2='100' y2='10' stroke='%23182A46' stroke-width='3' stroke-linecap='round'/><path d='M100 10 L118 16 L100 22 Z' fill='%23489B74'/></g></svg>">
-  <link rel="apple-touch-icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><rect width='200' height='200' rx='40' fill='%23ffffff'/><g transform='translate(0, 10)'><circle cx='100' cy='70' r='55' fill='%23EAEFEA'/><path d='M100 25 L145 95 L55 95 Z' fill='%23182A46'/><path d='M100 25 L145 95 L100 95 Z' fill='%23101C30'/><path d='M100 25 L80 95 L55 95 Z' fill='%23243B5E'/><path d='M100 90 Q92 75 100 60 Q108 45 100 25' stroke='%23489B74' stroke-width='5' stroke-linecap='round' fill='none'/><line x1='100' y1='25' x2='100' y2='10' stroke='%23182A46' stroke-width='3' stroke-linecap='round'/><path d='M100 10 L118 16 L100 22 Z' fill='%23489B74'/></g></svg>">
+  <!-- Favicon et Logo Icône Écran d'accueil (Pointe vers logo.png) -->
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="apple-touch-icon" href="logo.png">
 
-  <!-- Web App Manifest Web -->
-  <link rel="manifest" href='data:application/manifest+json,{"name":"VersMonAchat","short_name":"VMA","start_url":".","display":"standalone","background_color":"#ffffff","theme_color":"#182a46","icons":[{"src":"data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 200 200\"><rect width=\"200\" height=\"200\" rx=\"40\" fill=\"%23ffffff\"/><g transform=\"translate(0, 10)\"><circle cx=\"100\" cy=\"70\" r=\"55\" fill=\"%23EAEFEA\"/><path d=\"M100 25 L145 95 L55 95 Z\" fill=\"%23182A46\"/><path d=\"M100 25 L145 95 L100 95 Z\" fill=\"%23101C30\"/><path d=\"M100 25 L80 95 L55 95 Z\" fill=\"%23243B5E\"/><path d=\"M100 90 Q92 75 100 60 Q108 45 100 25\" stroke=\"%23489B74\" stroke-width=\"5\" stroke-linecap=\"round\" fill=\"none\"/><line x1=\"100\" y1=\"25\" x2=\"100\" y2=\"10\" stroke=\"%23182A46\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M100 10 L118 16 L100 22 Z\" fill=\"%23489B74\"/></g></svg>","sizes":"512x512","type":"image/svg+xml"}]}'>
+  <!-- Manifest Web App -->
+  <link rel="manifest" href='data:application/manifest+json,{"name":"VersMonAchat","short_name":"VMA","start_url":".","display":"standalone","background_color":"#ffffff","theme_color":"#182a46","icons":[{"src":"logo.png","sizes":"512x512","type":"image/png"}]}'>
 
   <!-- Script pour les confettis -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -641,7 +641,6 @@
     const closeInstallBtn = document.getElementById('close-install-btn');
     const okInstallBtn = document.getElementById('ok-install-btn');
 
-    // Écouteur pour la capture de l'événement d'installation PWA
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       deferredPrompt = e;
@@ -886,6 +885,7 @@
       const type = document.getElementById('contact-type').value;
       const message = document.getElementById('contact-message').value;
 
+      // ADRESSE DESTINATAIRE : fabiodesign63000@gmail.com
       const mailtoUrl = `mailto:fabiodesign63000@gmail.com?subject=${encodeURIComponent(type)}&body=${encodeURIComponent("Email: " + email + "\n\nMessage:\n" + message)}`;
       window.location.href = mailtoUrl;
 

@@ -18,9 +18,13 @@
   <!-- Manifest Web App -->
   <link rel="manifest" href='data:application/manifest+json,{"name":"VersMonAchat","short_name":"VMA","start_url":".","display":"standalone","background_color":"#ffffff","theme_color":"#182a46","icons":[{"src":"logo.png","sizes":"512x512","type":"image/png"}]}'>
 
-  <!-- Script pour les confettis et Chart.js pour les graphiques -->
+  <!-- Script pour les confettis, Chart.js & SDK Firebase -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 
   <style>
     :root {
@@ -33,16 +37,11 @@
       --text: #182a46;
       --text-muted: #64748b;
       --danger: #ef4444;
-      --info: #3b82f6;
+      --info: #2563eb;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    }
-
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
+    
     body {
       background-color: var(--bg);
       color: var(--text);
@@ -57,155 +56,57 @@
       background: var(--card);
       width: 100%;
       max-width: 460px;
-      padding: 24px 24px 20px 24px;
+      padding: 24px;
       border-radius: 20px;
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-      overflow: hidden;
       display: flex;
       flex-direction: column;
     }
 
-    /* EN-TÊTE / BRANDING VMA */
+    /* BRANDING VMA */
     .brand-header {
       text-align: center;
       margin-bottom: 16px;
-      padding-bottom: 14px;
+      padding-bottom: 12px;
       border-bottom: 1px solid #f1f5f9;
     }
 
-    .brand-logo-svg {
-      width: 85px;
-      height: 65px;
-      margin: 0 auto 4px auto;
-      display: block;
-    }
+    .brand-logo-svg { width: 85px; height: 65px; margin: 0 auto; display: block; }
+    .brand-title { font-size: 1.5rem; font-weight: 800; color: var(--primary); }
+    .brand-title span { color: var(--accent); }
+    .brand-slogan { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; }
 
-    .brand-title {
-      font-size: 1.6rem;
-      font-weight: 800;
-      color: var(--primary);
-      letter-spacing: -0.5px;
-      line-height: 1.1;
-    }
-
-    .brand-title span {
-      color: var(--accent);
-    }
-
-    .brand-slogan {
-      font-size: 0.82rem;
-      color: var(--text-muted);
-      margin-top: 4px;
-      margin-bottom: 10px;
-      font-weight: 500;
-    }
-
-    .brand-slogan span {
-      color: var(--accent);
-      font-weight: 600;
-    }
-
-    /* BARRE PROFIL UTILISATEUR CONNECTÉ */
+    /* BARRE UTILISATEUR CONNECTÉ */
     .user-bar {
       display: flex;
       justify-content: space-between;
       align-items: center;
       background: #f8fafc;
+      padding: 8px 12px;
+      border-radius: 10px;
+      margin-bottom: 14px;
+      font-size: 0.8rem;
       border: 1px solid #e2e8f0;
-      padding: 8px 14px;
-      border-radius: 12px;
-      margin-bottom: 16px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--primary);
     }
 
     .btn-logout {
       background: none;
-      border: 1px solid #cbd5e1;
+      border: none;
       color: var(--danger);
-      padding: 4px 10px;
-      border-radius: 8px;
-      font-size: 0.75rem;
       font-weight: 700;
       cursor: pointer;
       width: auto;
-      transition: all 0.2s;
+      padding: 0;
     }
 
-    .btn-logout:hover {
-      background: var(--danger);
-      color: white;
-      border-color: var(--danger);
-    }
-
-    /* BOUTON D'INSTALLATION */
-    .btn-install {
-      background-color: #f0fdf4;
-      color: var(--accent);
-      border: 1px solid #bbf7d0;
-      font-size: 0.82rem;
-      font-weight: 700;
-      padding: 8px 14px;
-      border-radius: 20px;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      margin: 0 auto;
-      transition: all 0.2s;
-      width: auto;
-    }
-
-    .btn-install:hover {
-      background-color: var(--accent);
-      color: white;
-    }
-
-    /* TOGGLE CONNEXION / INSCRIPTION */
-    .auth-tabs {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 16px;
-    }
-
-    .auth-tab-btn {
-      flex: 1;
-      padding: 10px;
-      background: #f1f5f9;
-      border: 1px solid #cbd5e1;
-      color: var(--text-muted);
-      border-radius: 10px;
-      font-weight: 700;
-      font-size: 0.85rem;
-      cursor: pointer;
-    }
-
-    .auth-tab-btn.active {
-      background: var(--primary);
-      color: white;
-      border-color: var(--primary);
-    }
-
-    /* BARRE D'ONGLETS / MULTI-OBJECTIFS */
+    /* BARRE D'ONGLETS */
     .tabs-container {
       display: flex;
       gap: 8px;
       overflow-x: auto;
       padding-bottom: 10px;
-      margin-bottom: 18px;
+      margin-bottom: 16px;
       border-bottom: 1px solid #e5e7eb;
-      scrollbar-width: thin;
-    }
-
-    .tabs-container::-webkit-scrollbar {
-      height: 4px;
-    }
-
-    .tabs-container::-webkit-scrollbar-thumb {
-      background: #cbd5e1;
-      border-radius: 4px;
     }
 
     .tab-btn {
@@ -218,96 +119,25 @@
       font-weight: 600;
       white-space: nowrap;
       cursor: pointer;
-      transition: all 0.2s;
-      display: flex;
-      align-items: center;
-      gap: 6px;
     }
 
-    .tab-btn.active {
-      background: var(--primary);
-      color: white;
-      border-color: var(--primary);
-      box-shadow: 0 2px 8px rgba(24, 42, 70, 0.25);
-    }
+    .tab-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+    .tab-btn.budget-tab { background: #eff6ff; color: #2563eb; border-color: #bfdbfe; }
+    .tab-btn.budget-tab.active { background: #2563eb; color: white; }
+    .tab-btn.add-btn { background: #eaf5f0; color: var(--accent); border-color: #c4e5d5; }
 
-    .tab-btn.budget-tab {
-      background: #eff6ff;
-      color: #2563eb;
-      border-color: #bfdbfe;
-    }
-
-    .tab-btn.budget-tab.active {
-      background: #2563eb;
-      color: white;
-      border-color: #2563eb;
-    }
-
-    .tab-btn.add-btn {
-      background: #eaf5f0;
-      color: var(--accent);
-      border-color: #c4e5d5;
-    }
-
-    h1 {
-      font-size: 1.3rem;
-      text-align: center;
-      margin-bottom: 16px;
-      color: var(--primary);
-    }
-
-    .form-group {
-      margin-bottom: 14px;
-    }
-
-    label {
-      display: block;
-      font-size: 0.875rem;
-      font-weight: 600;
-      margin-bottom: 6px;
-      color: var(--text-muted);
-    }
-
-    input[type="text"],
-    input[type="password"],
-    input[type="number"],
-    input[type="email"],
-    input[type="file"],
-    select,
-    textarea {
+    h1 { font-size: 1.25rem; text-align: center; margin-bottom: 14px; color: var(--primary); }
+    .form-group { margin-bottom: 12px; }
+    label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 4px; color: var(--text-muted); }
+    
+    input, select, textarea {
       width: 100%;
       padding: 11px;
       border: 1px solid #d1d5db;
       border-radius: 10px;
       font-size: 0.95rem;
       outline: none;
-      transition: border-color 0.2s;
       background: #fff;
-    }
-
-    input:focus, select:focus, textarea:focus {
-      border-color: var(--accent);
-    }
-
-    .emoji-presets {
-      display: flex;
-      gap: 8px;
-      margin-top: 8px;
-      flex-wrap: wrap;
-    }
-
-    .emoji-btn {
-      background: #f3f4f6;
-      border: 1px solid #e5e7eb;
-      border-radius: 8px;
-      padding: 6px 10px;
-      font-size: 1.2rem;
-      cursor: pointer;
-      transition: transform 0.1s;
-    }
-
-    .emoji-btn:active {
-      transform: scale(0.9);
     }
 
     button {
@@ -320,106 +150,12 @@
       font-size: 1rem;
       font-weight: 600;
       cursor: pointer;
-      transition: background-color 0.2s;
     }
 
-    button:hover {
-      background-color: var(--primary-hover);
-    }
+    .btn-accent { background-color: var(--accent); }
+    .btn-danger { background-color: var(--danger); margin-top: 16px; }
 
-    .btn-accent {
-      background-color: var(--accent);
-    }
-
-    .btn-accent:hover {
-      background-color: var(--accent-hover);
-    }
-
-    .btn-danger {
-      background-color: var(--danger);
-      margin-top: 20px;
-    }
-
-    .btn-danger:hover {
-      background-color: #dc2626;
-    }
-
-    .visual-header {
-      text-align: center;
-      margin-bottom: 16px;
-    }
-
-    .image-wrapper {
-      width: 100%;
-      max-height: 180px;
-      height: 180px;
-      overflow: hidden;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      border-radius: 14px;
-      margin-bottom: 12px;
-      background-color: rgba(72, 155, 116, 0.08);
-    }
-
-    .goal-image {
-      max-width: 100%;
-      max-height: 100%;
-      object-fit: contain;
-    }
-
-    .goal-emoji-large {
-      font-size: 3.5rem;
-      display: block;
-      margin-bottom: 8px;
-    }
-
-    .progress-section {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    .goal-title {
-      font-size: 1.4rem;
-      font-weight: bold;
-      margin-bottom: 8px;
-    }
-
-    .amount-display {
-      font-size: 2rem;
-      font-weight: 800;
-      color: var(--primary);
-      margin-bottom: 10px;
-    }
-
-    .amount-display span {
-      font-size: 1.1rem;
-      color: var(--text-muted);
-      font-weight: 500;
-    }
-
-    .progress-bar-container {
-      background: #e2e8f0;
-      height: 18px;
-      border-radius: 9px;
-      overflow: hidden;
-      margin-bottom: 8px;
-    }
-
-    .progress-bar {
-      height: 100%;
-      background: linear-gradient(90deg, var(--primary), var(--accent));
-      width: 0%;
-      transition: width 0.4s ease;
-    }
-
-    .percentage {
-      font-size: 0.875rem;
-      font-weight: 600;
-      color: var(--text-muted);
-    }
-
-    /* CARTES DE RÉSUMÉ DU BUDGET */
+    /* CARTES DU BUDGET GLOBAL */
     .budget-summary-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -431,348 +167,137 @@
       background: #f8fafc;
       border: 1px solid #e2e8f0;
       border-radius: 12px;
-      padding: 12px;
+      padding: 10px;
       text-align: center;
     }
 
-    .budget-card-title {
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      margin-bottom: 4px;
-    }
+    .budget-card-title { font-size: 0.7rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; }
+    .budget-card-value { font-size: 1.05rem; font-weight: 800; }
 
-    .budget-card-value {
-      font-size: 1.1rem;
-      font-weight: 800;
-    }
+    .chart-box { width: 100%; max-width: 200px; margin: 12px auto; }
+    .history-list { margin-top: 10px; max-height: 120px; overflow-y: auto; list-style: none; }
+    .history-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f1f5f9; font-size: 0.85rem; }
 
-    .value-savings { color: #2563eb; }
-    .value-income { color: var(--accent); }
-    .value-expense { color: var(--danger); }
-    .value-net { color: var(--primary); }
+    .app-footer { margin-top: 20px; padding-top: 10px; border-top: 1px dashed #e2e8f0; text-align: center; }
+    .contact-link { color: var(--text-muted); font-size: 0.8rem; text-decoration: none; font-weight: 500; cursor: pointer; }
 
-    /* ZONE DU GRAPHIQUE CAMEMBERT */
-    .chart-box {
-      width: 100%;
-      max-width: 220px;
-      margin: 16px auto;
-      position: relative;
-    }
-
-    .history-list {
-      margin-top: 10px;
-      max-height: 140px;
-      overflow-y: auto;
-      list-style: none;
-    }
-
-    .history-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 8px 0;
-      border-bottom: 1px solid #f1f5f9;
-      font-size: 0.875rem;
-    }
-
-    .item-tag {
-      font-size: 0.7rem;
-      font-weight: 700;
-      padding: 2px 6px;
-      border-radius: 6px;
-      text-transform: uppercase;
-    }
-    .tag-savings { background: #dbeafe; color: #1e40af; }
-    .tag-income { background: #d1fae5; color: #065f46; }
-    .tag-expense { background: #fee2e2; color: #991b1b; }
-
-    .btn-del-item {
-      background: none;
-      border: none;
-      color: #94a3b8;
-      font-size: 1rem;
-      cursor: pointer;
-      padding: 0 4px;
-      width: auto;
-    }
-    .btn-del-item:hover { color: var(--danger); }
-
-    .app-footer {
-      margin-top: 24px;
-      padding-top: 12px;
-      border-top: 1px dashed #e2e8f0;
-      text-align: center;
-    }
-
-    .contact-link {
-      color: var(--text-muted);
-      font-size: 0.8rem;
-      text-decoration: none;
-      font-weight: 500;
-      cursor: pointer;
-      transition: color 0.2s;
-    }
-
-    .contact-link:hover {
-      color: var(--accent);
-    }
-
-    .modal-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: rgba(15, 23, 42, 0.6);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-      padding: 20px;
-    }
-
-    .modal-content {
-      background: white;
-      padding: 28px;
-      border-radius: 20px;
-      text-align: center;
-      max-width: 380px;
-      width: 100%;
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
-      animation: popIn 0.3s ease-out;
-    }
-
-    .guide-step {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      text-align: left;
-      margin-bottom: 12px;
-      font-size: 0.9rem;
-      color: var(--text);
-    }
-
-    .guide-step span {
-      background: var(--accent);
-      color: white;
-      font-weight: bold;
-      width: 26px;
-      height: 26px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-
-    @keyframes popIn {
-      0% { transform: scale(0.8); opacity: 0; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-
-    .hidden {
-      display: none !important;
-    }
+    .hidden { display: none !important; }
+    .auth-toggle { text-align: center; margin-top: 12px; font-size: 0.85rem; color: var(--accent); cursor: pointer; text-decoration: underline; }
   </style>
 </head>
 <body>
 
   <div class="container">
     
-    <!-- EN-TÊTE DE LA MARQUE VMA -->
+    <!-- BRANDING VMA -->
     <div class="brand-header">
-      <svg class="brand-logo-svg" viewBox="0 0 200 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <svg class="brand-logo-svg" viewBox="0 0 200 150" fill="none">
         <circle cx="100" cy="70" r="55" fill="#EAEFEA" />
         <path d="M100 25 L145 95 L55 95 Z" fill="#182A46" />
         <path d="M100 25 L145 95 L100 95 Z" fill="#101C30" />
-        <path d="M100 25 L80 95 L55 95 Z" fill="#243B5E" />
-        <path d="M100 90 Q92 75 100 60 Q108 45 100 25" stroke="#489B74" stroke-width="5" stroke-linecap="round" fill="none" />
-        <line x1="100" y1="25" x2="100" y2="10" stroke="#182A46" stroke-width="3" stroke-linecap="round" />
+        <path d="M100 90 Q92 75 100 60 Q108 45 100 25" stroke="#489B74" stroke-width="5" fill="none" />
+        <line x1="100" y1="25" x2="100" y2="10" stroke="#182A46" stroke-width="3" />
         <path d="M100 10 L118 16 L100 22 Z" fill="#489B74" />
       </svg>
       <div class="brand-title">Vers<span>Mon</span>Achat</div>
       <div class="brand-slogan">Chaque euro t'emmène <span>plus près.</span></div>
-      
-      <button id="install-app-btn" class="btn-install">
-        <span>📲</span> Installer sur l'écran d'accueil
-      </button>
     </div>
 
-    <!-- BARRE DE PROFIL UTILISATEUR CONNECTÉ -->
-    <div id="user-bar" class="user-bar hidden">
-      <span>👤 <span id="user-display-name">---</span></span>
-      <button id="logout-btn" class="btn-logout">Déconnexion</button>
-    </div>
-
-    <!-- ECRAN DE CONNEXION / INSCRIPTION -->
+    <!-- ÉCRAN DE CONNEXION / INSCRIPTION -->
     <div id="auth-view">
-      <div class="auth-tabs">
-        <button id="auth-tab-login" class="auth-tab-btn active">Connexion</button>
-        <button id="auth-tab-register" class="auth-tab-btn">Créer un compte</button>
+      <h1 id="auth-title">Connexion à votre compte</h1>
+      <form id="auth-form">
+        <div class="form-group">
+          <label for="auth-email">Adresse E-mail</label>
+          <input type="email" id="auth-email" placeholder="votre@email.com" required>
+        </div>
+        <div class="form-group">
+          <label for="auth-password">Mot de passe</label>
+          <input type="password" id="auth-password" placeholder="••••••••" required>
+        </div>
+        <button type="submit" id="auth-submit-btn" class="btn-accent">Se connecter</button>
+      </form>
+      <div id="auth-toggle-btn" class="auth-toggle">Pas encore de compte ? S'inscrire</div>
+    </div>
+
+    <!-- APPLICATION PRINCIPALE (AFFICHER UNE FOIS CONNECTÉ) -->
+    <div id="app-content" class="hidden">
+      
+      <!-- BARRE UTILISATEUR CONNECTÉ -->
+      <div class="user-bar">
+        <span id="user-email-display">---</span>
+        <button id="logout-btn" class="btn-logout">Déconnexion</button>
       </div>
 
-      <!-- FORMULAIRE SE CONNECTER -->
-      <form id="login-form">
-        <h1 style="font-size: 1.1rem; margin-bottom: 12px;">🔐 Accéder à votre espace</h1>
-        <div class="form-group">
-          <label for="login-username">Pseudo</label>
-          <input type="text" id="login-username" placeholder="Ex: Fabio" required>
-        </div>
-        <div class="form-group">
-          <label for="login-password">Mot de passe</label>
-          <input type="password" id="login-password" placeholder="••••••••" required>
-        </div>
-        <button type="submit" class="btn-accent" style="margin-top: 8px;">Se connecter</button>
-      </form>
-
-      <!-- FORMULAIRE S'INSCRIRE -->
-      <form id="register-form" class="hidden">
-        <h1 style="font-size: 1.1rem; margin-bottom: 12px;">✨ Nouveau compte VMA</h1>
-        <div class="form-group">
-          <label for="reg-username">Choisissez un Pseudo</label>
-          <input type="text" id="reg-username" placeholder="Ex: Fabio" required>
-        </div>
-        <div class="form-group">
-          <label for="reg-password">Choisissez un Mot de passe</label>
-          <input type="password" id="reg-password" placeholder="••••••••" required>
-        </div>
-        <button type="submit" class="btn-accent" style="margin-top: 8px;">Créer mon compte</button>
-      </form>
-    </div>
-
-    <!-- CONTENU PRINCIPAL DE L'APPLICATION (UN FOIS CONNECTÉ) -->
-    <div id="app-main" class="hidden">
-      
-      <!-- BARRE D'ONGLETS POUR NAVIGUER (BUDGET / OBJECTIFS) -->
+      <!-- ONGLETS -->
       <div id="tabs-container" class="tabs-container"></div>
 
-      <!-- ÉCRAN 0 : CALCULATEUR DE BUDGET GLOBAL -->
+      <!-- ÉCRAN BUDGET GLOBAL -->
       <div id="budget-view">
         <h1>📊 Mon Budget Global</h1>
-
         <div class="budget-summary-grid">
-          <div class="budget-card">
-            <div class="budget-card-title">Épargne / Livrets</div>
-            <div id="b-total-savings" class="budget-card-value value-savings">0 €</div>
-          </div>
-          <div class="budget-card">
-            <div class="budget-card-title">Rentrées / mois</div>
-            <div id="b-total-income" class="budget-card-value value-income">+0 €</div>
-          </div>
-          <div class="budget-card">
-            <div class="budget-card-title">Dépenses / mois</div>
-            <div id="b-total-expenses" class="budget-card-value value-expense">-0 €</div>
-          </div>
-          <div class="budget-card">
-            <div class="budget-card-title">Reste disponible</div>
-            <div id="b-net-monthly" class="budget-card-value value-net">0 €</div>
-          </div>
+          <div class="budget-card"><div class="budget-card-title">Épargne</div><div id="b-total-savings" class="budget-card-value" style="color:#2563eb;">0 €</div></div>
+          <div class="budget-card"><div class="budget-card-title">Rentrées</div><div id="b-total-income" class="budget-card-value" style="color:var(--accent);">+0 €</div></div>
+          <div class="budget-card"><div class="budget-card-title">Dépenses</div><div id="b-total-expenses" class="budget-card-value" style="color:var(--danger);">-0 €</div></div>
+          <div class="budget-card"><div class="budget-card-title">Reste</div><div id="b-net-monthly" class="budget-card-value">0 €</div></div>
         </div>
-
-        <!-- CAMEMBERT DU BUDGET GLOBAL -->
-        <div class="chart-box">
-          <canvas id="budgetPieChart"></canvas>
-        </div>
-
-        <form id="budget-item-form" style="background: #f8fafc; padding: 14px; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 16px;">
-          <h3 style="font-size: 0.85rem; color: var(--primary); margin-bottom: 10px;">➕ Ajouter un compte, revenu ou dépense</h3>
-          
+        
+        <div class="chart-box"><canvas id="budgetPieChart"></canvas></div>
+        
+        <form id="budget-item-form" style="background:#f8fafc; padding:12px; border-radius:12px; margin-bottom:12px; border:1px solid #e2e8f0;">
           <div class="form-group">
             <select id="b-item-type">
-              <option value="savings">🏦 Épargne / Compte (ex: Livret A, LDD...)</option>
-              <option value="income">📈 Rentrée d'argent (ex: Salaire, Aides...)</option>
-              <option value="expense">📉 Dépense / Charge (ex: Loyer, Abonnements...)</option>
+              <option value="savings">🏦 Épargne (Livret A, LDD...)</option>
+              <option value="income">📈 Rentrée (Salaire, Aides...)</option>
+              <option value="expense">📉 Dépense (Loyer, Abonnements...)</option>
             </select>
           </div>
-
-          <div style="display: flex; gap: 8px;">
-            <input type="text" id="b-item-name" placeholder="Nom (ex: Livret A, Loyer...)" required style="flex: 2;">
-            <input type="number" id="b-item-amount" min="0" step="any" placeholder="Montant (€)" required style="flex: 1;">
+          <div style="display:flex; gap:8px;">
+            <input type="text" id="b-item-name" placeholder="Nom (ex: Livret A)" required style="flex:2;">
+            <input type="number" id="b-item-amount" placeholder="€" required style="flex:1;">
           </div>
-
-          <button type="submit" class="btn-accent" style="margin-top: 10px; padding: 10px;">Ajouter à mon budget</button>
+          <button type="submit" class="btn-accent" style="margin-top:8px;">Ajouter à mon budget</button>
         </form>
-
-        <h3 style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px;">Détail de vos comptes et charges</h3>
         <ul id="budget-items-list" class="history-list"></ul>
       </div>
 
-      <!-- ÉCRAN 1 : FORMULAIRE DE CRÉATION D'UN OBJECTIF -->
+      <!-- ÉCRAN NOUVEL OBJECTIF -->
       <div id="setup-view" class="hidden">
         <h1>🎯 Nouvel Objectif</h1>
         <form id="goal-form">
           <div class="form-group">
-            <label for="goal-name">Nom de l'objectif</label>
+            <label>Nom de l'objectif</label>
             <input type="text" id="goal-name" placeholder="Ex: PS5, Voyage..." required>
           </div>
-
           <div class="form-group">
-            <label for="goal-target">Montant cible (€)</label>
+            <label>Montant cible (€)</label>
             <input type="number" id="goal-target" min="1" step="any" placeholder="Ex: 500" required>
           </div>
-
           <div class="form-group">
-            <label for="goal-emoji">Émoji de l'objectif</label>
+            <label>Émoji</label>
             <input type="text" id="goal-emoji" value="🎯" maxlength="4">
-            <div class="emoji-presets">
-              <button type="button" class="emoji-btn" onclick="selectEmoji('🎮')">🎮</button>
-              <button type="button" class="emoji-btn" onclick="selectEmoji('🏠')">🏠</button>
-              <button type="button" class="emoji-btn" onclick="selectEmoji('🚗')">🚗</button>
-              <button type="button" class="emoji-btn" onclick="selectEmoji('✈️')">✈️</button>
-              <button type="button" class="emoji-btn" onclick="selectEmoji('📱')">📱</button>
-              <button type="button" class="emoji-btn" onclick="selectEmoji('👟')">👟</button>
-              <button type="button" class="emoji-btn" onclick="selectEmoji('🛍️')">🛍️</button>
-            </div>
           </div>
-
-          <div class="form-group">
-            <label for="goal-image">Ou ajouter une photo (optionnel)</label>
-            <input type="file" id="goal-image" accept="image/*">
-          </div>
-
-          <button type="submit" class="btn-accent" style="margin-top: 10px;">Créer ma tirelire</button>
+          <button type="submit" class="btn-accent">Créer ma tirelire</button>
         </form>
       </div>
 
-      <!-- ÉCRAN 2 : TABLEAU DE BORD D'UN OBJECTIF -->
+      <!-- ÉCRAN DASHBOARD OBJECTIF -->
       <div id="dashboard-view" class="hidden">
-        
-        <div class="visual-header">
-          <div class="image-wrapper hidden" id="image-container">
-            <img id="display-image" class="goal-image" alt="Objectif">
-          </div>
-          <span id="display-emoji" class="goal-emoji-large">🎯</span>
-          <h2 id="display-title" class="goal-title">---</h2>
+        <div style="text-align:center; margin-bottom:12px;">
+          <span id="display-emoji" style="font-size:3rem;">🎯</span>
+          <h2 id="display-title">---</h2>
         </div>
-
-        <div class="progress-section">
-          <div class="amount-display">
-            <span id="display-current">0.00</span> € / <span id="display-target">0.00 €</span>
-          </div>
-          <div class="progress-bar-container">
-            <div id="progress-bar" class="progress-bar"></div>
-          </div>
-          <div id="display-percent" class="percentage">0% complété</div>
-
-          <!-- CAMEMBERT DE L'OBJECTIF INDIVIDUEL -->
-          <div class="chart-box">
-            <canvas id="goalPieChart"></canvas>
-          </div>
+        <div style="text-align:center;">
+          <div style="font-size:1.8rem; font-weight:800; color:var(--primary);"><span id="display-current">0</span> € / <span id="display-target">0 €</span></div>
+          <div class="chart-box"><canvas id="goalPieChart"></canvas></div>
         </div>
-
-        <form id="deposit-form" class="form-group">
-          <label for="deposit-amount">Ajouter de l'argent (€)</label>
-          <div style="display: flex; gap: 8px;">
-            <input type="number" id="deposit-amount" min="0.01" step="any" placeholder="Ex: 50" required>
-            <button type="submit" class="btn-accent" style="width: auto; padding: 0 20px;">+ Ajouter</button>
+        <form id="deposit-form">
+          <div style="display:flex; gap:8px;">
+            <input type="number" id="deposit-amount" min="0.01" step="any" placeholder="Ajouter €" required>
+            <button type="submit" class="btn-accent" style="width:auto; padding:0 16px;">+ Ajouter</button>
           </div>
         </form>
-
-        <h3 style="font-size: 0.85rem; color: var(--text-muted); margin-top: 18px;">Historique des versements</h3>
         <ul id="history-list" class="history-list"></ul>
-
         <button id="reset-btn" class="btn-danger">Supprimer cet objectif</button>
       </div>
 
@@ -780,638 +305,257 @@
 
     <!-- FOOTER AVEC LIEN DE CONTACT -->
     <div class="app-footer">
-      <a id="open-contact-btn" class="contact-link">💬 Un problème ? Contactez-nous</a>
+      <a href="mailto:fabiodesign63000@gmail.com" class="contact-link">💬 Un problème ? Contactez-nous</a>
     </div>
 
-  </div>
-
-  <!-- MODAL / GUIDE D'INSTALLATION DE L'APPLICATION -->
-  <div id="install-modal" class="modal-overlay hidden">
-    <div class="modal-content" style="text-align: left;">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-        <h2 style="font-size: 1.1rem; color: var(--primary);">📲 Installer VersMonAchat</h2>
-        <button id="close-install-btn" style="width: auto; background: none; border: none; font-size: 1.5rem; color: var(--text-muted); cursor: pointer; padding: 0;">&times;</button>
-      </div>
-
-      <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">Pour ajouter l'application sur votre écran d'accueil avec son icône officielle :</p>
-
-      <div class="guide-step">
-        <span>1</span>
-        <div>Appuyez sur le bouton <strong>Partager</strong> <span style="font-size: 1.1rem;">⎋</span> (iOS Safari) ou le <strong>menu ⫶</strong> (Android Chrome).</div>
-      </div>
-
-      <div class="guide-step">
-        <span>2</span>
-        <div>Choisissez l'option <strong>« Sur l'écran d'accueil »</strong> ou <strong>« Installer l'application »</strong>.</div>
-      </div>
-
-      <div class="guide-step">
-        <span>3</span>
-        <div>Validez : l'icône <strong>VersMonAchat</strong> apparaîtra comme une vraie application !</div>
-      </div>
-
-      <button id="ok-install-btn" class="btn-accent" style="margin-top: 12px;">Compris !</button>
-    </div>
-  </div>
-
-  <!-- POP-UP DE CÉLÉBRATION (CONFETTIS) -->
-  <div id="modal-overlay" class="modal-overlay hidden">
-    <div class="modal-content">
-      <div style="font-size: 3.5rem; margin-bottom: 10px;">🥳🎉</div>
-      <h2 style="color: var(--primary); margin-bottom: 12px;">Objectif Atteint !</h2>
-      <p id="modal-message" style="color: var(--text); line-height: 1.5; margin-bottom: 20px; font-size: 0.95rem;"></p>
-      <button id="modal-close-btn" class="btn-accent">Génial, merci !</button>
-    </div>
-  </div>
-
-  <!-- POP-UP / FORMULAIRE DE CONTACT -->
-  <div id="contact-modal" class="modal-overlay hidden">
-    <div class="modal-content" style="text-align: left;">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-        <h2 style="font-size: 1.2rem; color: var(--primary);">💬 Formulaire de Contact</h2>
-        <button id="close-contact-btn" style="width: auto; background: none; border: none; font-size: 1.5rem; color: var(--text-muted); cursor: pointer; padding: 0;">&times;</button>
-      </div>
-      
-      <form id="contact-form">
-        <div class="form-group">
-          <label for="contact-email">Votre Email (optionnel)</label>
-          <input type="email" id="contact-email" placeholder="exemple@email.com">
-        </div>
-
-        <div class="form-group">
-          <label for="contact-type">Type de demande</label>
-          <select id="contact-type">
-            <option value="🐛 Bug / Problème technique">🐛 Bug / Problème technique</option>
-            <option value="💡 Suggestion d'amélioration">💡 Suggestion d'amélioration</option>
-            <option value="❓ Question / Autre">❓ Question / Autre</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label for="contact-message">Message</label>
-          <textarea id="contact-message" rows="4" placeholder="Décrivez votre problème ou votre idée ici..." required></textarea>
-        </div>
-
-        <button type="submit" class="btn-accent">Envoyer le message</button>
-      </form>
-    </div>
   </div>
 
   <script>
-    // BASE DE DONNÉES ET GESTION DES COMPTES UTILISATEURS
-    let users = JSON.parse(localStorage.getItem('vma_users')) || {};
-    let currentUser = localStorage.getItem('vma_current_user') || null;
-    let state = null;
+    // TES CLÉS FIREBASE OFFICIELLES
+    const firebaseConfig = {
+      apiKey: "AIzaSyAIKTKl5kjV-7sVZG5PitA3OpLcYgO3lAE",
+      authDomain: "versmonachat.firebaseapp.com",
+      projectId: "versmonachat",
+      storageBucket: "versmonachat.firebasestorage.app",
+      messagingSenderId: "789306526811",
+      appId: "1:789306526811:web:7518eac8cbd4c0b9b3437e",
+      measurementId: "G-1EFSW03NSK"
+    };
 
-    let deferredPrompt = null;
-    let goalChartInstance = null;
-    let budgetChartInstance = null;
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
 
-    // ELEMENTS AUTH
+    let currentUser = null;
+    let isSignUpMode = false;
+    let state = { goals: [], activeGoalId: 'BUDGET', budget: { items: [] } };
+    let goalChart = null, budgetChart = null;
+
+    // ÉLÉMENTS DOM
     const authView = document.getElementById('auth-view');
-    const appMain = document.getElementById('app-main');
-    const userBar = document.getElementById('user-bar');
-    const userDisplayName = document.getElementById('user-display-name');
+    const appContent = document.getElementById('app-content');
+    const authForm = document.getElementById('auth-form');
+    const authToggleBtn = document.getElementById('auth-toggle-btn');
+    const authTitle = document.getElementById('auth-title');
+    const authSubmitBtn = document.getElementById('auth-submit-btn');
     const logoutBtn = document.getElementById('logout-btn');
+    const userEmailDisplay = document.getElementById('user-email-display');
 
-    const authTabLogin = document.getElementById('auth-tab-login');
-    const authTabRegister = document.getElementById('auth-tab-register');
-    const loginForm = document.getElementById('login-form');
-    const registerForm = document.getElementById('register-form');
-
-    // ELEMENTS APP
-    const budgetView = document.getElementById('budget-view');
-    const setupView = document.getElementById('setup-view');
-    const dashboardView = document.getElementById('dashboard-view');
-    const tabsContainer = document.getElementById('tabs-container');
-    
-    const goalForm = document.getElementById('goal-form');
-    const depositForm = document.getElementById('deposit-form');
-    const budgetItemForm = document.getElementById('budget-item-form');
-    const resetBtn = document.getElementById('reset-btn');
-    
-    const modalOverlay = document.getElementById('modal-overlay');
-    const modalCloseBtn = document.getElementById('modal-close-btn');
-    const contactModal = document.getElementById('contact-modal');
-    const openContactBtn = document.getElementById('open-contact-btn');
-    const closeContactBtn = document.getElementById('close-contact-btn');
-    const contactForm = document.getElementById('contact-form');
-
-    const installAppBtn = document.getElementById('install-app-btn');
-    const installModal = document.getElementById('install-modal');
-    const closeInstallBtn = document.getElementById('close-install-btn');
-    const okInstallBtn = document.getElementById('ok-install-btn');
-
-    // GESTION DU PROMPT DE PWA
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
+    // BASCULER CONNEXION / INSCRIPTION
+    authToggleBtn.addEventListener('click', () => {
+      isSignUpMode = !isSignUpMode;
+      authTitle.textContent = isSignUpMode ? "Créer un compte" : "Connexion à votre compte";
+      authSubmitBtn.textContent = isSignUpMode ? "S'inscrire" : "Se connecter";
+      authToggleBtn.textContent = isSignUpMode ? "Déjà un compte ? Se connecter" : "Pas encore de compte ? S'inscrire";
     });
 
-    installAppBtn.addEventListener('click', () => {
-      if (deferredPrompt) {
-        deferredPrompt.prompt();
-        deferredPrompt.userChoice.then(() => { deferredPrompt = null; });
+    // SOUMISSION AUTHENTIFICATION
+    authForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = document.getElementById('auth-email').value;
+      const pass = document.getElementById('auth-password').value;
+
+      if (isSignUpMode) {
+        auth.createUserWithEmailAndPassword(email, pass)
+          .catch(err => alert("Erreur lors de l'inscription : " + err.message));
       } else {
-        installModal.classList.remove('hidden');
+        auth.signInWithEmailAndPassword(email, pass)
+          .catch(err => alert("Erreur de connexion : " + err.message));
       }
     });
 
-    closeInstallBtn.addEventListener('click', () => installModal.classList.add('hidden'));
-    okInstallBtn.addEventListener('click', () => installModal.classList.add('hidden'));
+    logoutBtn.addEventListener('click', () => auth.signOut());
 
-    // GESTION DES BASCULES AUTHENTIFICATION
-    authTabLogin.addEventListener('click', () => {
-      authTabLogin.classList.add('active');
-      authTabRegister.classList.remove('active');
-      loginForm.classList.remove('hidden');
-      registerForm.classList.add('hidden');
-    });
-
-    authTabRegister.addEventListener('click', () => {
-      authTabRegister.classList.add('active');
-      authTabLogin.classList.remove('active');
-      registerForm.classList.remove('hidden');
-      loginForm.classList.add('hidden');
-    });
-
-    // CRÉER UN COMPTE
-    registerForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const username = document.getElementById('reg-username').value.trim();
-      const password = document.getElementById('reg-password').value;
-
-      if (!username || !password) return;
-
-      if (users[username.toLowerCase()]) {
-        alert("Ce pseudo existe déjà ! Veuillez en choisir un autre ou vous connecter.");
-        return;
-      }
-
-      users[username.toLowerCase()] = {
-        name: username,
-        password: password,
-        data: {
-          goals: [],
-          activeGoalId: 'BUDGET',
-          budget: {
-            items: [
-              { id: '1', type: 'savings', name: 'Livret A', amount: 1000 },
-              { id: '2', type: 'income', name: 'Salaire', amount: 1800 },
-              { id: '3', type: 'expense', name: 'Loyer', amount: 650 }
-            ]
-          }
-        }
-      };
-
-      localStorage.setItem('vma_users', JSON.stringify(users));
-      currentUser = username.toLowerCase();
-      localStorage.setItem('vma_current_user', currentUser);
-
-      alert(`Bienvenue ${username} ! Votre compte a été créé avec succès.`);
-      registerForm.reset();
-      checkAuth();
-    });
-
-    // SE CONNECTER
-    loginForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const username = document.getElementById('login-username').value.trim().toLowerCase();
-      const password = document.getElementById('login-password').value;
-
-      if (users[username] && users[username].password === password) {
-        currentUser = username;
-        localStorage.setItem('vma_current_user', currentUser);
-        loginForm.reset();
-        checkAuth();
-      } else {
-        alert("Pseudo ou mot de passe incorrect !");
-      }
-    });
-
-    // DÉCONNEXION
-    logoutBtn.addEventListener('click', () => {
-      currentUser = null;
-      localStorage.removeItem('vma_current_user');
-      checkAuth();
-    });
-
-    function checkAuth() {
-      if (currentUser && users[currentUser]) {
-        state = users[currentUser].data;
-        userDisplayName.textContent = users[currentUser].name;
-        userBar.classList.remove('hidden');
+    // ÉCOUTEUR D'ÉTAT DE CONNEXION
+    auth.onAuthStateChanged(user => {
+      currentUser = user;
+      if (user) {
         authView.classList.add('hidden');
-        appMain.classList.remove('hidden');
-        render();
+        appContent.classList.remove('hidden');
+        userEmailDisplay.textContent = user.email;
+        loadUserData();
       } else {
-        userBar.classList.add('hidden');
         authView.classList.remove('hidden');
-        appMain.classList.add('hidden');
+        appContent.classList.add('hidden');
       }
-    }
+    });
 
-    function saveState() {
-      if (currentUser && users[currentUser]) {
-        users[currentUser].data = state;
-        try {
-          localStorage.setItem('vma_users', JSON.stringify(users));
-        } catch (e) {
-          alert("Erreur de stockage : privilégiez des photos plus légères.");
-        }
-      }
-    }
-
-    function selectEmoji(emoji) {
-      document.getElementById('goal-emoji').value = emoji;
-    }
-
-    function getFormattedDuration(startDateString) {
-      const start = new Date(startDateString);
-      const now = new Date();
-      const diffMs = now - start;
-      const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-
-      if (diffDays === 0) return "aujourd'hui même";
-      if (diffDays === 1) return "1 jour";
-      if (diffDays < 30) return `${diffDays} jours`;
-
-      const months = Math.floor(diffDays / 30);
-      const remainingDays = diffDays % 30;
-
-      if (months === 1) {
-        return remainingDays > 0 ? `1 mois et ${remainingDays} jour(s)` : "1 mois";
-      }
-      return remainingDays > 0 ? `${months} mois et ${remainingDays} jour(s)` : `${months} mois`;
-    }
-
-    function launchConfettiRain() {
-      if (typeof confetti === 'function') {
-        const duration = 2.5 * 1000;
-        const animationEnd = Date.now() + duration;
-
-        const interval = setInterval(function() {
-          const timeLeft = animationEnd - Date.now();
-          if (timeLeft <= 0) return clearInterval(interval);
-
-          confetti({ particleCount: 7, angle: 60, spread: 55, origin: { x: 0, y: 0.6 } });
-          confetti({ particleCount: 7, angle: 120, spread: 55, origin: { x: 1, y: 0.6 } });
-        }, 150);
-      }
-    }
-
-    function triggerCelebration(goal) {
-      launchConfettiRain();
-      const durationText = getFormattedDuration(goal.startDate || new Date());
-      const message = `Bravo ! Vous avez réussi à économiser <strong>${goal.target.toFixed(2)} €</strong> en <strong>${durationText}</strong>.<br><br>Vous pouvez désormais réaliser l'achat de votre <strong>${goal.title}</strong> ! 🛍️`;
-
-      document.getElementById('modal-message').innerHTML = message;
-      modalOverlay.classList.remove('hidden');
-    }
-
-    // GRAPHIQUE CAMEMBERT OBJECTIF
-    function updateGoalPieChart(currentAmount, targetAmount) {
-      const ctx = document.getElementById('goalPieChart').getContext('2d');
-      const remainingAmount = Math.max(0, targetAmount - currentAmount);
-
-      if (goalChartInstance) {
-        goalChartInstance.destroy();
-      }
-
-      goalChartInstance = new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-          labels: ['Économisé (€)', 'Reste à financer (€)'],
-          datasets: [{
-            data: [currentAmount, remainingAmount],
-            backgroundColor: ['#489b74', '#182a46'],
-            borderWidth: 2,
-            borderColor: '#ffffff'
-          }]
-        },
-        options: {
-          responsive: true,
-          plugins: {
-            legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } }
-          }
+    // CHARGEMENT & SAUVEGARDE EN LIGNE (FIRESTORE)
+    function loadUserData() {
+      if (!currentUser) return;
+      db.collection('users').doc(currentUser.uid).onSnapshot(doc => {
+        if (doc.exists) {
+          state = doc.data();
+          if (!state.budget) state.budget = { items: [] };
+          render();
+        } else {
+          saveState();
         }
       });
     }
 
-    // GRAPHIQUE CAMEMBERT BUDGET GLOBAL
-    function updateBudgetPieChart(savings, income, expenses) {
+    function saveState() {
+      if (!currentUser) return;
+      db.collection('users').doc(currentUser.uid).set(state);
+    }
+
+    // GRAPHIQUE BUDGET
+    function updateBudgetChart(savings, income, expenses) {
       const ctx = document.getElementById('budgetPieChart').getContext('2d');
-
-      if (budgetChartInstance) {
-        budgetChartInstance.destroy();
-      }
-
-      budgetChartInstance = new Chart(ctx, {
+      if (budgetChart) budgetChart.destroy();
+      budgetChart = new Chart(ctx, {
         type: 'pie',
         data: {
-          labels: ['Épargne (€)', 'Revenus (€)', 'Dépenses (€)'],
-          datasets: [{
-            data: [savings, income, expenses],
-            backgroundColor: ['#3b82f6', '#10b981', '#ef4444'],
-            borderWidth: 2,
-            borderColor: '#ffffff'
-          }]
+          labels: ['Épargne', 'Revenus', 'Dépenses'],
+          datasets: [{ data: [savings, income, expenses], backgroundColor: ['#2563eb', '#489b74', '#ef4444'] }]
         },
-        options: {
-          responsive: true,
-          plugins: {
-            legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } }
-          }
-        }
+        options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+      });
+    }
+
+    // GRAPHIQUE OBJECTIF
+    function updateGoalChart(currentAmount, targetAmount) {
+      const ctx = document.getElementById('goalPieChart').getContext('2d');
+      const remainingAmount = Math.max(0, targetAmount - currentAmount);
+
+      if (goalChart) goalChart.destroy();
+      goalChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Économisé', 'Reste'],
+          datasets: [{ data: [currentAmount, remainingAmount], backgroundColor: ['#489b74', '#182a46'] }]
+        },
+        options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
       });
     }
 
     function renderBudget() {
-      const items = (state.budget && state.budget.items) ? state.budget.items : [];
-
-      let totalSavings = 0;
-      let totalIncome = 0;
-      let totalExpenses = 0;
-
-      items.forEach(item => {
-        if (item.type === 'savings') totalSavings += item.amount;
-        if (item.type === 'income') totalIncome += item.amount;
-        if (item.type === 'expense') totalExpenses += item.amount;
+      const items = state.budget.items || [];
+      let savings = 0, income = 0, expenses = 0;
+      items.forEach(i => {
+        if (i.type === 'savings') savings += i.amount;
+        if (i.type === 'income') income += i.amount;
+        if (i.type === 'expense') expenses += i.amount;
       });
 
-      const netMonthly = totalIncome - totalExpenses;
+      document.getElementById('b-total-savings').textContent = savings.toLocaleString('fr-FR') + ' €';
+      document.getElementById('b-total-income').textContent = '+' + income.toLocaleString('fr-FR') + ' €';
+      document.getElementById('b-total-expenses').textContent = '-' + expenses.toLocaleString('fr-FR') + ' €';
+      document.getElementById('b-net-monthly').textContent = (income - expenses).toLocaleString('fr-FR') + ' €';
 
-      document.getElementById('b-total-savings').textContent = totalSavings.toLocaleString('fr-FR') + ' €';
-      document.getElementById('b-total-income').textContent = '+' + totalIncome.toLocaleString('fr-FR') + ' €';
-      document.getElementById('b-total-expenses').textContent = '-' + totalExpenses.toLocaleString('fr-FR') + ' €';
-      
-      const netElem = document.getElementById('b-net-monthly');
-      netElem.textContent = (netMonthly >= 0 ? '+' : '') + netMonthly.toLocaleString('fr-FR') + ' €';
-      netElem.className = 'budget-card-value ' + (netMonthly >= 0 ? 'value-income' : 'value-expense');
+      updateBudgetChart(savings, income, expenses);
 
-      updateBudgetPieChart(totalSavings, totalIncome, totalExpenses);
-
-      const listElem = document.getElementById('budget-items-list');
-      listElem.innerHTML = '';
-
-      items.forEach(item => {
+      const list = document.getElementById('budget-items-list');
+      list.innerHTML = '';
+      items.forEach((item, index) => {
         const li = document.createElement('li');
         li.className = 'history-item';
-
-        let tagClass = 'tag-savings';
-        let typeName = 'Épargne';
-        let prefix = '';
-
-        if (item.type === 'income') {
-          tagClass = 'tag-income';
-          typeName = 'Revenu';
-          prefix = '+';
-        } else if (item.type === 'expense') {
-          tagClass = 'tag-expense';
-          typeName = 'Dépense';
-          prefix = '-';
-        }
-
-        li.innerHTML = `
-          <div>
-            <span class="item-tag ${tagClass}">${typeName}</span>
-            <strong style="margin-left: 6px;">${item.name}</strong>
-          </div>
-          <div style="display: flex; align-items: center; gap: 8px;">
-            <span><strong>${prefix}${item.amount.toLocaleString('fr-FR')} €</strong></span>
-            <button class="btn-del-item" onclick="deleteBudgetItem('${item.id}')">&times;</button>
-          </div>
-        `;
-        listElem.appendChild(li);
+        li.innerHTML = `<span><strong>${item.name}</strong></span> <span>${item.amount.toLocaleString('fr-FR')} € <button onclick="deleteBudgetItem(${index})" style="width:auto; background:none; color:red; border:none; cursor:pointer;">&times;</button></span>`;
+        list.appendChild(li);
       });
     }
 
-    function deleteBudgetItem(id) {
-      state.budget.items = state.budget.items.filter(i => i.id !== id);
+    window.deleteBudgetItem = function(index) {
+      state.budget.items.splice(index, 1);
       saveState();
-      renderBudget();
-    }
+    };
 
-    budgetItemForm.addEventListener('submit', (e) => {
+    document.getElementById('budget-item-form').addEventListener('submit', (e) => {
       e.preventDefault();
       const type = document.getElementById('b-item-type').value;
       const name = document.getElementById('b-item-name').value;
       const amount = parseFloat(document.getElementById('b-item-amount').value);
-
-      if (name && amount > 0) {
-        if (!state.budget.items) state.budget.items = [];
-        state.budget.items.push({
-          id: Date.now().toString(),
-          type,
-          name,
-          amount
-        });
-        saveState();
-        renderBudget();
-        budgetItemForm.reset();
-      }
+      state.budget.items.push({ type, name, amount });
+      saveState();
+      e.target.reset();
     });
 
     function renderTabs() {
+      const tabsContainer = document.getElementById('tabs-container');
       tabsContainer.innerHTML = '';
-      tabsContainer.classList.remove('hidden');
+      
+      const bBtn = document.createElement('button');
+      bBtn.className = `tab-btn budget-tab ${state.activeGoalId === 'BUDGET' ? 'active' : ''}`;
+      bBtn.textContent = '📊 Budget Global';
+      bBtn.onclick = () => { state.activeGoalId = 'BUDGET'; render(); };
+      tabsContainer.appendChild(bBtn);
 
-      // 1. ONGLET FIXE BUDGET GLOBAL
-      const budgetBtn = document.createElement('button');
-      budgetBtn.className = `tab-btn budget-tab ${state.activeGoalId === 'BUDGET' ? 'active' : ''}`;
-      budgetBtn.innerHTML = `<span>📊</span> <span>Budget Global</span>`;
-      budgetBtn.onclick = () => {
-        state.activeGoalId = 'BUDGET';
-        saveState();
-        render();
-      };
-      tabsContainer.appendChild(budgetBtn);
-
-      // 2. ONGLETS DES OBJECTIFS
-      (state.goals || []).forEach(goal => {
+      state.goals.forEach(g => {
         const btn = document.createElement('button');
-        btn.className = `tab-btn ${goal.id === state.activeGoalId ? 'active' : ''}`;
-        btn.innerHTML = `<span>${goal.emoji || '🎯'}</span> <span>${goal.title}</span>`;
-        btn.onclick = () => {
-          state.activeGoalId = goal.id;
-          saveState();
-          render();
-        };
+        btn.className = `tab-btn ${g.id === state.activeGoalId ? 'active' : ''}`;
+        btn.textContent = `${g.emoji} ${g.title}`;
+        btn.onclick = () => { state.activeGoalId = g.id; render(); };
         tabsContainer.appendChild(btn);
       });
 
-      // 3. ONGLET AJOUTER UN OBJECTIF
       const addBtn = document.createElement('button');
       addBtn.className = `tab-btn add-btn ${state.activeGoalId === 'NEW' ? 'active' : ''}`;
-      addBtn.innerHTML = `<span>➕</span> <span>Nouvel objectif</span>`;
-      addBtn.onclick = () => {
-        state.activeGoalId = 'NEW';
-        saveState();
-        render();
-      };
+      addBtn.textContent = '➕ Nouvel objectif';
+      addBtn.onclick = () => { state.activeGoalId = 'NEW'; render(); };
       tabsContainer.appendChild(addBtn);
     }
 
     function render() {
-      if (!state) return;
       renderTabs();
+      const bView = document.getElementById('budget-view');
+      const sView = document.getElementById('setup-view');
+      const dView = document.getElementById('dashboard-view');
+
+      bView.classList.add('hidden');
+      sView.classList.add('hidden');
+      dView.classList.add('hidden');
 
       if (state.activeGoalId === 'BUDGET') {
-        budgetView.classList.remove('hidden');
-        setupView.classList.add('hidden');
-        dashboardView.classList.add('hidden');
+        bView.classList.remove('hidden');
         renderBudget();
-        return;
-      }
-
-      budgetView.classList.add('hidden');
-      const activeGoal = (state.goals || []).find(g => g.id === state.activeGoalId);
-
-      if (!activeGoal || state.activeGoalId === 'NEW') {
-        setupView.classList.remove('hidden');
-        dashboardView.classList.add('hidden');
-        goalForm.reset();
-        document.getElementById('goal-emoji').value = '🎯';
+      } else if (state.activeGoalId === 'NEW') {
+        sView.classList.remove('hidden');
       } else {
-        setupView.classList.add('hidden');
-        dashboardView.classList.remove('hidden');
-
-        document.getElementById('display-title').textContent = activeGoal.title;
-        document.getElementById('display-current').textContent = activeGoal.current.toFixed(2);
-        document.getElementById('display-target').textContent = activeGoal.target.toFixed(2) + ' €';
-
-        const imgElem = document.getElementById('display-image');
-        const imgContainer = document.getElementById('image-container');
-        const emojiElem = document.getElementById('display-emoji');
-
-        if (activeGoal.image) {
-          imgElem.src = activeGoal.image;
-          imgContainer.classList.remove('hidden');
-          emojiElem.classList.add('hidden');
-        } else {
-          imgContainer.classList.add('hidden');
-          emojiElem.classList.remove('hidden');
-          emojiElem.textContent = activeGoal.emoji || '🎯';
+        const goal = state.goals.find(g => g.id === state.activeGoalId);
+        if (goal) {
+          dView.classList.remove('hidden');
+          document.getElementById('display-title').textContent = goal.title;
+          document.getElementById('display-emoji').textContent = goal.emoji;
+          document.getElementById('display-current').textContent = goal.current.toFixed(2);
+          document.getElementById('display-target').textContent = goal.target.toFixed(2) + ' €';
+          updateGoalChart(goal.current, goal.target);
         }
-
-        const percentage = Math.min(100, (activeGoal.current / activeGoal.target) * 100);
-        document.getElementById('progress-bar').style.width = percentage + '%';
-        document.getElementById('display-percent').textContent = percentage.toFixed(1) + '% complété';
-
-        updateGoalPieChart(activeGoal.current, activeGoal.target);
-
-        const historyList = document.getElementById('history-list');
-        historyList.innerHTML = '';
-        (activeGoal.history || []).slice().reverse().forEach(item => {
-          const li = document.createElement('li');
-          li.className = 'history-item';
-          li.innerHTML = `<span>${item.date}</span><strong>+${item.amount.toFixed(2)} €</strong>`;
-          historyList.appendChild(li);
-        });
       }
     }
 
-    goalForm.addEventListener('submit', (e) => {
+    document.getElementById('goal-form').addEventListener('submit', (e) => {
       e.preventDefault();
       const title = document.getElementById('goal-name').value;
       const target = parseFloat(document.getElementById('goal-target').value);
       const emoji = document.getElementById('goal-emoji').value || '🎯';
-      const fileInput = document.getElementById('goal-image');
-      const newId = Date.now().toString();
-      const startDate = new Date().toISOString();
-
-      const addGoalToState = (imageData) => {
-        const newGoal = {
-          id: newId,
-          title,
-          target,
-          current: 0,
-          emoji,
-          image: imageData,
-          history: [],
-          startDate,
-          completed: false
-        };
-
-        if (!state.goals) state.goals = [];
-        state.goals.push(newGoal);
-        state.activeGoalId = newId;
-        saveState();
-        render();
-      };
-
-      if (fileInput.files && fileInput.files[0]) {
-        const reader = new FileReader();
-        reader.onload = (evt) => addGoalToState(evt.target.result);
-        reader.readAsDataURL(fileInput.files[0]);
-      } else {
-        addGoalToState(null);
-      }
+      const newGoal = { id: Date.now().toString(), title, target, current: 0, emoji, history: [] };
+      state.goals.push(newGoal);
+      state.activeGoalId = newGoal.id;
+      saveState();
+      e.target.reset();
     });
 
-    depositForm.addEventListener('submit', (e) => {
+    document.getElementById('deposit-form').addEventListener('submit', (e) => {
       e.preventDefault();
-      const amountInput = document.getElementById('deposit-amount');
-      const amount = parseFloat(amountInput.value);
-
-      const activeGoal = (state.goals || []).find(g => g.id === state.activeGoalId);
-
-      if (activeGoal && amount > 0) {
-        activeGoal.current += amount;
-        activeGoal.history.push({
-          amount,
-          date: new Date().toLocaleDateString('fr-FR')
-        });
-
-        if (activeGoal.current >= activeGoal.target && !activeGoal.completed) {
-          activeGoal.completed = true;
-          triggerCelebration(activeGoal);
+      const amount = parseFloat(document.getElementById('deposit-amount').value);
+      const goal = state.goals.find(g => g.id === state.activeGoalId);
+      if (goal && amount > 0) {
+        goal.current += amount;
+        if (typeof confetti === 'function' && goal.current >= goal.target) {
+          confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
         }
-
         saveState();
-        render();
-        amountInput.value = '';
+        document.getElementById('deposit-amount').value = '';
       }
     });
 
-    openContactBtn.addEventListener('click', () => {
-      contactModal.classList.remove('hidden');
-    });
-
-    closeContactBtn.addEventListener('click', () => {
-      contactModal.classList.add('hidden');
-    });
-
-    contactForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const email = document.getElementById('contact-email').value || 'Non renseigné';
-      const type = document.getElementById('contact-type').value;
-      const message = document.getElementById('contact-message').value;
-
-      const mailtoUrl = `mailto:fabiodesign63000@gmail.com?subject=${encodeURIComponent(type)}&body=${encodeURIComponent("Email: " + email + "\n\nMessage:\n" + message)}`;
-      window.location.href = mailtoUrl;
-
-      alert("Merci ! Votre application de messagerie s'est ouverte pour transmettre le message.");
-      contactModal.classList.add('hidden');
-      contactForm.reset();
-    });
-
-    modalCloseBtn.addEventListener('click', () => {
-      modalOverlay.classList.add('hidden');
-    });
-
-    resetBtn.addEventListener('click', () => {
-      const activeGoal = (state.goals || []).find(g => g.id === state.activeGoalId);
-      if (activeGoal && confirm(`Voulez-vous vraiment supprimer l'objectif "${activeGoal.title}" ?`)) {
+    document.getElementById('reset-btn').addEventListener('click', () => {
+      if (confirm("Voulez-vous vraiment supprimer cet objectif ?")) {
         state.goals = state.goals.filter(g => g.id !== state.activeGoalId);
         state.activeGoalId = 'BUDGET';
         saveState();
-        render();
       }
     });
-
-    // DEMARRAGE
-    checkAuth();
   </script>
 </body>
 </html>

@@ -37,11 +37,16 @@
       --text: #182a46;
       --text-muted: #64748b;
       --danger: #ef4444;
-      --info: #2563eb;
+      --info: #3b82f6;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
-    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
     body {
       background-color: var(--bg);
       color: var(--text);
@@ -56,25 +61,53 @@
       background: var(--card);
       width: 100%;
       max-width: 460px;
-      padding: 24px;
+      padding: 24px 24px 20px 24px;
       border-radius: 20px;
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
       display: flex;
       flex-direction: column;
     }
 
-    /* BRANDING VMA */
+    /* EN-TÊTE / BRANDING VMA */
     .brand-header {
       text-align: center;
-      margin-bottom: 16px;
-      padding-bottom: 12px;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
       border-bottom: 1px solid #f1f5f9;
     }
 
-    .brand-logo-svg { width: 85px; height: 65px; margin: 0 auto; display: block; }
-    .brand-title { font-size: 1.5rem; font-weight: 800; color: var(--primary); }
-    .brand-title span { color: var(--accent); }
-    .brand-slogan { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; margin-bottom: 10px; }
+    .brand-logo-svg {
+      width: 90px;
+      height: 70px;
+      margin: 0 auto 4px auto;
+      display: block;
+    }
+
+    .brand-title {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--primary);
+      letter-spacing: -0.5px;
+      line-height: 1.1;
+    }
+
+    .brand-title span {
+      color: var(--accent);
+    }
+
+    .brand-slogan {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+      margin-bottom: 12px;
+      font-weight: 500;
+    }
+
+    .brand-slogan span {
+      color: var(--accent);
+      font-weight: 600;
+    }
 
     /* BOUTON D'INSTALLATION */
     .btn-install {
@@ -95,7 +128,10 @@
       width: auto;
     }
 
-    .btn-install:hover { background-color: var(--accent); color: white; }
+    .btn-install:hover {
+      background-color: var(--accent);
+      color: white;
+    }
 
     /* BARRE UTILISATEUR CONNECTÉ */
     .user-bar {
@@ -120,15 +156,24 @@
       padding: 0;
     }
 
-    /* BARRE D'ONGLETS */
+    /* BARRE D'ONGLETS / MULTI-OBJECTIFS */
     .tabs-container {
       display: flex;
       gap: 8px;
       overflow-x: auto;
       padding-bottom: 10px;
-      margin-bottom: 16px;
+      margin-bottom: 18px;
       border-bottom: 1px solid #e5e7eb;
       scrollbar-width: thin;
+    }
+
+    .tabs-container::-webkit-scrollbar {
+      height: 4px;
+    }
+
+    .tabs-container::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
     }
 
     .tab-btn {
@@ -141,28 +186,75 @@
       font-weight: 600;
       white-space: nowrap;
       cursor: pointer;
+      transition: all 0.2s;
       display: flex;
       align-items: center;
       gap: 6px;
     }
 
-    .tab-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
-    .tab-btn.budget-tab { background: #eff6ff; color: #2563eb; border-color: #bfdbfe; }
-    .tab-btn.budget-tab.active { background: #2563eb; color: white; }
-    .tab-btn.add-btn { background: #eaf5f0; color: var(--accent); border-color: #c4e5d5; }
+    .tab-btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+      box-shadow: 0 2px 8px rgba(24, 42, 70, 0.25);
+    }
 
-    h1 { font-size: 1.25rem; text-align: center; margin-bottom: 14px; color: var(--primary); }
-    .form-group { margin-bottom: 14px; }
-    label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: var(--text-muted); }
-    
-    input[type="text"], input[type="number"], input[type="email"], input[type="password"], input[type="file"], select, textarea {
+    .tab-btn.budget-tab {
+      background: #eff6ff;
+      color: #2563eb;
+      border-color: #bfdbfe;
+    }
+
+    .tab-btn.budget-tab.active {
+      background: #2563eb;
+      color: white;
+      border-color: #2563eb;
+    }
+
+    .tab-btn.add-btn {
+      background: #eaf5f0;
+      color: var(--accent);
+      border-color: #c4e5d5;
+    }
+
+    h1 {
+      font-size: 1.3rem;
+      text-align: center;
+      margin-bottom: 16px;
+      color: var(--primary);
+    }
+
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: var(--text-muted);
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="email"],
+    input[type="password"],
+    input[type="file"],
+    select,
+    textarea {
       width: 100%;
       padding: 11px;
       border: 1px solid #d1d5db;
       border-radius: 10px;
       font-size: 0.95rem;
       outline: none;
+      transition: border-color 0.2s;
       background: #fff;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--accent);
     }
 
     .emoji-presets {
@@ -183,6 +275,10 @@
       width: auto;
     }
 
+    .emoji-btn:active {
+      transform: scale(0.9);
+    }
+
     button {
       width: 100%;
       padding: 12px;
@@ -193,33 +289,35 @@
       font-size: 1rem;
       font-weight: 600;
       cursor: pointer;
+      transition: background-color 0.2s;
     }
 
-    .btn-accent { background-color: var(--accent); }
-    .btn-danger { background-color: var(--danger); margin-top: 18px; }
+    button:hover {
+      background-color: var(--primary-hover);
+    }
 
-    /* CARTES DU BUDGET GLOBAL */
-    .budget-summary-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
+    .btn-accent {
+      background-color: var(--accent);
+    }
+
+    .btn-accent:hover {
+      background-color: var(--accent-hover);
+    }
+
+    .btn-danger {
+      background-color: var(--danger);
+      margin-top: 20px;
+    }
+
+    .btn-danger:hover {
+      background-color: #dc2626;
+    }
+
+    .visual-header {
+      text-align: center;
       margin-bottom: 16px;
     }
 
-    .budget-card {
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      border-radius: 12px;
-      padding: 10px;
-      text-align: center;
-    }
-
-    .budget-card-title { font-size: 0.7rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; }
-    .budget-card-value { font-size: 1.05rem; font-weight: 800; }
-
-    /* EN-TÊTE VISUEL OBJECTIFS */
-    .visual-header { text-align: center; margin-bottom: 14px; }
-    
     .image-wrapper {
       width: 100%;
       max-height: 180px;
@@ -233,16 +331,48 @@
       background-color: rgba(72, 155, 116, 0.08);
     }
 
-    .goal-image { max-width: 100%; max-height: 100%; object-fit: contain; }
-    .goal-emoji-large { font-size: 3.5rem; display: block; margin-bottom: 8px; }
-    .goal-title { font-size: 1.3rem; font-weight: bold; margin-bottom: 6px; }
+    .goal-image {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+
+    .goal-emoji-large {
+      font-size: 3.5rem;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .progress-section {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .goal-title {
+      font-size: 1.4rem;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .amount-display {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--primary);
+      margin-bottom: 10px;
+    }
+
+    .amount-display span {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
 
     .progress-bar-container {
       background: #e2e8f0;
       height: 18px;
       border-radius: 9px;
       overflow: hidden;
-      margin: 10px 0 6px 0;
+      margin-bottom: 8px;
     }
 
     .progress-bar {
@@ -252,63 +382,203 @@
       transition: width 0.4s ease;
     }
 
-    .chart-box { width: 100%; max-width: 220px; margin: 14px auto; }
-    .history-list { margin-top: 10px; max-height: 130px; overflow-y: auto; list-style: none; }
-    .history-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f1f5f9; font-size: 0.85rem; }
+    .percentage {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
 
-    /* MODALES POP-UP */
+    /* CARTES DE RÉSUMÉ DU BUDGET */
+    .budget-summary-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .budget-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 12px;
+      text-align: center;
+    }
+
+    .budget-card-title {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .budget-card-value {
+      font-size: 1.1rem;
+      font-weight: 800;
+    }
+
+    .value-savings { color: #2563eb; }
+    .value-income { color: var(--accent); }
+    .value-expense { color: var(--danger); }
+    .value-net { color: var(--primary); }
+
+    /* ZONE DU GRAPHIQUE CAMEMBERT */
+    .chart-box {
+      width: 100%;
+      max-width: 220px;
+      margin: 16px auto;
+      position: relative;
+    }
+
+    .history-list {
+      margin-top: 10px;
+      max-height: 140px;
+      overflow-y: auto;
+      list-style: none;
+    }
+
+    .history-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid #f1f5f9;
+      font-size: 0.875rem;
+    }
+
+    .item-tag {
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 6px;
+      text-transform: uppercase;
+    }
+    .tag-savings { background: #dbeafe; color: #1e40af; }
+    .tag-income { background: #d1fae5; color: #065f46; }
+    .tag-expense { background: #fee2e2; color: #991b1b; }
+
+    .btn-del-item {
+      background: none;
+      border: none;
+      color: #94a3b8;
+      font-size: 1rem;
+      cursor: pointer;
+      padding: 0 4px;
+      width: auto;
+    }
+    .btn-del-item:hover { color: var(--danger); }
+
+    .app-footer {
+      margin-top: 24px;
+      padding-top: 12px;
+      border-top: 1px dashed #e2e8f0;
+      text-align: center;
+    }
+
+    .contact-link {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      text-decoration: none;
+      font-weight: 500;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .contact-link:hover {
+      color: var(--accent);
+    }
+
     .modal-overlay {
       position: fixed;
-      top: 0; left: 0;
-      width: 100vw; height: 100vh;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
       background: rgba(15, 23, 42, 0.6);
-      display: flex; justify-content: center; align-items: center;
-      z-index: 1000; padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      padding: 20px;
     }
 
     .modal-content {
-      background: white; padding: 26px; border-radius: 20px;
-      text-align: center; max-width: 380px; width: 100%;
+      background: white;
+      padding: 28px;
+      border-radius: 20px;
+      text-align: center;
+      max-width: 380px;
+      width: 100%;
       box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+      animation: popIn 0.3s ease-out;
     }
 
-    .guide-step { display: flex; align-items: center; gap: 12px; text-align: left; margin-bottom: 12px; font-size: 0.88rem; }
+    .guide-step {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-align: left;
+      margin-bottom: 12px;
+      font-size: 0.9rem;
+      color: var(--text);
+    }
+
     .guide-step span {
-      background: var(--accent); color: white; font-weight: bold;
-      width: 26px; height: 26px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+      background: var(--accent);
+      color: white;
+      font-weight: bold;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
     }
 
-    .app-footer { margin-top: 20px; padding-top: 10px; border-top: 1px dashed #e2e8f0; text-align: center; }
-    .contact-link { color: var(--text-muted); font-size: 0.8rem; text-decoration: none; font-weight: 500; cursor: pointer; }
+    @keyframes popIn {
+      0% { transform: scale(0.8); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
 
-    .hidden { display: none !important; }
-    .auth-toggle { text-align: center; margin-top: 12px; font-size: 0.85rem; color: var(--accent); cursor: pointer; text-decoration: underline; }
+    .hidden {
+      display: none !important;
+    }
+
+    .auth-toggle {
+      text-align: center;
+      margin-top: 12px;
+      font-size: 0.85rem;
+      color: var(--accent);
+      cursor: pointer;
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
 
   <div class="container">
     
-    <!-- BRANDING VMA -->
+    <!-- EN-TÊTE DE LA MARQUE VMA -->
     <div class="brand-header">
-      <svg class="brand-logo-svg" viewBox="0 0 200 150" fill="none">
+      <svg class="brand-logo-svg" viewBox="0 0 200 150" fill="none" xmlns="http://www.w3.org/2000/svg">
         <circle cx="100" cy="70" r="55" fill="#EAEFEA" />
         <path d="M100 25 L145 95 L55 95 Z" fill="#182A46" />
         <path d="M100 25 L145 95 L100 95 Z" fill="#101C30" />
-        <path d="M100 90 Q92 75 100 60 Q108 45 100 25" stroke="#489B74" stroke-width="5" fill="none" />
-        <line x1="100" y1="25" x2="100" y2="10" stroke="#182A46" stroke-width="3" />
+        <path d="M100 25 L80 95 L55 95 Z" fill="#243B5E" />
+        <path d="M100 90 Q92 75 100 60 Q108 45 100 25" stroke="#489B74" stroke-width="5" stroke-linecap="round" fill="none" />
+        <line x1="100" y1="25" x2="100" y2="10" stroke="#182A46" stroke-width="3" stroke-linecap="round" />
         <path d="M100 10 L118 16 L100 22 Z" fill="#489B74" />
       </svg>
       <div class="brand-title">Vers<span>Mon</span>Achat</div>
       <div class="brand-slogan">Chaque euro t'emmène <span>plus près.</span></div>
-
+      
       <button id="install-app-btn" class="btn-install">
         <span>📲</span> Installer sur l'écran d'accueil
       </button>
     </div>
 
-    <!-- ÉCRAN DE CONNEXION / INSCRIPTION -->
+    <!-- ÉCRAN DE CONNEXION / INSCRIPTION FIREBASE -->
     <div id="auth-view">
       <h1 id="auth-title">Connexion à votre compte</h1>
       <form id="auth-form">
@@ -325,7 +595,7 @@
       <div id="auth-toggle-btn" class="auth-toggle">Pas encore de compte ? S'inscrire</div>
     </div>
 
-    <!-- APPLICATION PRINCIPALE (CONNEXION REQUIS) -->
+    <!-- APPLICATION PRINCIPALE (AFFICHER UNE FOIS CONNECTÉ) -->
     <div id="app-content" class="hidden">
       
       <!-- BARRE UTILISATEUR CONNECTÉ -->
@@ -334,39 +604,61 @@
         <button id="logout-btn" class="btn-logout">Déconnexion</button>
       </div>
 
-      <!-- BARRE D'ONGLETS -->
+      <!-- BARRE D'ONGLETS POUR NAVIGUER (BUDGET / OBJECTIFS) -->
       <div id="tabs-container" class="tabs-container"></div>
 
-      <!-- ÉCRAN 0 : BUDGET GLOBAL -->
+      <!-- ÉCRAN 0 : CALCULATEUR DE BUDGET GLOBAL -->
       <div id="budget-view">
         <h1>📊 Mon Budget Global</h1>
+
         <div class="budget-summary-grid">
-          <div class="budget-card"><div class="budget-card-title">Épargne</div><div id="b-total-savings" class="budget-card-value" style="color:#2563eb;">0 €</div></div>
-          <div class="budget-card"><div class="budget-card-title">Rentrées</div><div id="b-total-income" class="budget-card-value" style="color:var(--accent);">+0 €</div></div>
-          <div class="budget-card"><div class="budget-card-title">Dépenses</div><div id="b-total-expenses" class="budget-card-value" style="color:var(--danger);">-0 €</div></div>
-          <div class="budget-card"><div class="budget-card-title">Reste</div><div id="b-net-monthly" class="budget-card-value">0 €</div></div>
+          <div class="budget-card">
+            <div class="budget-card-title">Épargne / Livrets</div>
+            <div id="b-total-savings" class="budget-card-value value-savings">0 €</div>
+          </div>
+          <div class="budget-card">
+            <div class="budget-card-title">Rentrées / mois</div>
+            <div id="b-total-income" class="budget-card-value value-income">+0 €</div>
+          </div>
+          <div class="budget-card">
+            <div class="budget-card-title">Dépenses / mois</div>
+            <div id="b-total-expenses" class="budget-card-value value-expense">-0 €</div>
+          </div>
+          <div class="budget-card">
+            <div class="budget-card-title">Reste disponible</div>
+            <div id="b-net-monthly" class="budget-card-value value-net">0 €</div>
+          </div>
         </div>
-        
-        <div class="chart-box"><canvas id="budgetPieChart"></canvas></div>
-        
-        <form id="budget-item-form" style="background:#f8fafc; padding:12px; border-radius:12px; margin-bottom:12px; border:1px solid #e2e8f0;">
+
+        <!-- CAMEMBERT DU BUDGET GLOBAL -->
+        <div class="chart-box">
+          <canvas id="budgetPieChart"></canvas>
+        </div>
+
+        <form id="budget-item-form" style="background: #f8fafc; padding: 14px; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 16px;">
+          <h3 style="font-size: 0.85rem; color: var(--primary); margin-bottom: 10px;">➕ Ajouter un compte, revenu ou dépense</h3>
+          
           <div class="form-group">
             <select id="b-item-type">
-              <option value="savings">🏦 Épargne (Livret A, LDD...)</option>
-              <option value="income">📈 Rentrée (Salaire, Aides...)</option>
-              <option value="expense">📉 Dépense (Loyer, Abonnements...)</option>
+              <option value="savings">🏦 Épargne / Compte (ex: Livret A, LDD...)</option>
+              <option value="income">📈 Rentrée d'argent (ex: Salaire, Aides...)</option>
+              <option value="expense">📉 Dépense / Charge (ex: Loyer, Abonnements...)</option>
             </select>
           </div>
-          <div style="display:flex; gap:8px;">
-            <input type="text" id="b-item-name" placeholder="Nom (ex: Livret A)" required style="flex:2;">
-            <input type="number" id="b-item-amount" placeholder="€" required style="flex:1;">
+
+          <div style="display: flex; gap: 8px;">
+            <input type="text" id="b-item-name" placeholder="Nom (ex: Livret A, Loyer...)" required style="flex: 2;">
+            <input type="number" id="b-item-amount" min="0" step="any" placeholder="Montant (€)" required style="flex: 1;">
           </div>
-          <button type="submit" class="btn-accent" style="margin-top:8px;">Ajouter à mon budget</button>
+
+          <button type="submit" class="btn-accent" style="margin-top: 10px; padding: 10px;">Ajouter à mon budget</button>
         </form>
+
+        <h3 style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px;">Détail de vos comptes et charges</h3>
         <ul id="budget-items-list" class="history-list"></ul>
       </div>
 
-      <!-- ÉCRAN 1 : NOUVEL OBJECTIF -->
+      <!-- ÉCRAN 1 : FORMULAIRE DE CRÉATION D'UN OBJECTIF -->
       <div id="setup-view" class="hidden">
         <h1>🎯 Nouvel Objectif</h1>
         <form id="goal-form">
@@ -403,8 +695,9 @@
         </form>
       </div>
 
-      <!-- ÉCRAN 2 : DASHBOARD DE L'OBJECTIF -->
+      <!-- ÉCRAN 2 : TABLEAU DE BORD D'UN OBJECTIF -->
       <div id="dashboard-view" class="hidden">
+        
         <div class="visual-header">
           <div class="image-wrapper hidden" id="image-container">
             <img id="display-image" class="goal-image" alt="Objectif">
@@ -413,28 +706,30 @@
           <h2 id="display-title" class="goal-title">---</h2>
         </div>
 
-        <div style="text-align:center;">
-          <div style="font-size:1.8rem; font-weight:800; color:var(--primary);">
+        <div class="progress-section">
+          <div class="amount-display">
             <span id="display-current">0.00</span> € / <span id="display-target">0.00 €</span>
           </div>
           <div class="progress-bar-container">
             <div id="progress-bar" class="progress-bar"></div>
           </div>
-          <div id="display-percent" style="font-size:0.85rem; color:var(--text-muted); font-weight:600;">0% complété</div>
+          <div id="display-percent" class="percentage">0% complété</div>
 
-          <!-- CAMEMBERT DE L'OBJECTIF -->
-          <div class="chart-box"><canvas id="goalPieChart"></canvas></div>
+          <!-- CAMEMBERT DE L'OBJECTIF INDIVIDUEL -->
+          <div class="chart-box">
+            <canvas id="goalPieChart"></canvas>
+          </div>
         </div>
 
         <form id="deposit-form" class="form-group">
           <label for="deposit-amount">Ajouter de l'argent (€)</label>
-          <div style="display:flex; gap:8px;">
+          <div style="display: flex; gap: 8px;">
             <input type="number" id="deposit-amount" min="0.01" step="any" placeholder="Ex: 50" required>
-            <button type="submit" class="btn-accent" style="width:auto; padding:0 18px;">+ Ajouter</button>
+            <button type="submit" class="btn-accent" style="width: auto; padding: 0 20px;">+ Ajouter</button>
           </div>
         </form>
 
-        <h3 style="font-size: 0.85rem; color: var(--text-muted); margin-top: 16px;">Historique des versements</h3>
+        <h3 style="font-size: 0.85rem; color: var(--text-muted); margin-top: 18px;">Historique des versements</h3>
         <ul id="history-list" class="history-list"></ul>
 
         <button id="reset-btn" class="btn-danger">Supprimer cet objectif</button>
@@ -449,17 +744,31 @@
 
   </div>
 
-  <!-- MODAL / GUIDE D'INSTALLATION PWA -->
+  <!-- MODAL / GUIDE D'INSTALLATION DE L'APPLICATION -->
   <div id="install-modal" class="modal-overlay hidden">
     <div class="modal-content" style="text-align: left;">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
         <h2 style="font-size: 1.1rem; color: var(--primary);">📲 Installer VersMonAchat</h2>
         <button id="close-install-btn" style="width: auto; background: none; border: none; font-size: 1.5rem; color: var(--text-muted); cursor: pointer; padding: 0;">&times;</button>
       </div>
+
       <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">Pour ajouter l'application sur votre écran d'accueil avec son icône officielle :</p>
-      <div class="guide-step"><span>1</span><div>Appuyez sur le bouton <strong>Partager ⎋</strong> (iOS Safari) ou le <strong>menu ⫶</strong> (Android Chrome).</div></div>
-      <div class="guide-step"><span>2</span><div>Choisissez l'option <strong>« Sur l'écran d'accueil »</strong> ou <strong>« Installer »</strong>.</div></div>
-      <div class="guide-step"><span>3</span><div>Validez : l'icône <strong>VersMonAchat</strong> apparaîtra comme une vraie application !</div></div>
+
+      <div class="guide-step">
+        <span>1</span>
+        <div>Appuyez sur le bouton <strong>Partager</strong> <span style="font-size: 1.1rem;">⎋</span> (iOS Safari) ou le <strong>menu ⫶</strong> (Android Chrome).</div>
+      </div>
+
+      <div class="guide-step">
+        <span>2</span>
+        <div>Choisissez l'option <strong>« Sur l'écran d'accueil »</strong> ou <strong>« Installer l'application »</strong>.</div>
+      </div>
+
+      <div class="guide-step">
+        <span>3</span>
+        <div>Validez : l'icône <strong>VersMonAchat</strong> apparaîtra comme une vraie application !</div>
+      </div>
+
       <button id="ok-install-btn" class="btn-accent" style="margin-top: 12px;">Compris !</button>
     </div>
   </div>
@@ -481,11 +790,13 @@
         <h2 style="font-size: 1.2rem; color: var(--primary);">💬 Formulaire de Contact</h2>
         <button id="close-contact-btn" style="width: auto; background: none; border: none; font-size: 1.5rem; color: var(--text-muted); cursor: pointer; padding: 0;">&times;</button>
       </div>
+      
       <form id="contact-form">
         <div class="form-group">
           <label for="contact-email">Votre Email (optionnel)</label>
           <input type="email" id="contact-email" placeholder="exemple@email.com">
         </div>
+
         <div class="form-group">
           <label for="contact-type">Type de demande</label>
           <select id="contact-type">
@@ -494,17 +805,19 @@
             <option value="❓ Question / Autre">❓ Question / Autre</option>
           </select>
         </div>
+
         <div class="form-group">
           <label for="contact-message">Message</label>
           <textarea id="contact-message" rows="4" placeholder="Décrivez votre problème ou votre idée ici..." required></textarea>
         </div>
+
         <button type="submit" class="btn-accent">Envoyer le message</button>
       </form>
     </div>
   </div>
 
   <script>
-    // CONFIGURATION FIREBASE
+    // TES CLÉS FIREBASE OFFICIELLES
     const firebaseConfig = {
       apiKey: "AIzaSyAIKTKl5kjV-7sVZG5PitA3OpLcYgO3lAE",
       authDomain: "versmonachat.firebaseapp.com",
@@ -521,11 +834,23 @@
 
     let currentUser = null;
     let isSignUpMode = false;
-    let state = { goals: [], activeGoalId: 'BUDGET', budget: { items: [] } };
-    let goalChart = null, budgetChart = null;
-    let deferredPrompt = null;
+    let state = {
+      goals: [],
+      activeGoalId: 'BUDGET',
+      budget: {
+        items: [
+          { id: '1', type: 'savings', name: 'Livret A', amount: 10000 },
+          { id: '2', type: 'income', name: 'Salaire', amount: 2000 },
+          { id: '3', type: 'expense', name: 'Loyer', amount: 700 }
+        ]
+      }
+    };
 
-    // ÉLÉMENTS DOM
+    let deferredPrompt = null;
+    let goalChartInstance = null;
+    let budgetChartInstance = null;
+
+    // ÉLÉMENTS DOM AUTH
     const authView = document.getElementById('auth-view');
     const appContent = document.getElementById('app-content');
     const authForm = document.getElementById('auth-form');
@@ -535,11 +860,17 @@
     const logoutBtn = document.getElementById('logout-btn');
     const userEmailDisplay = document.getElementById('user-email-display');
 
-    const installAppBtn = document.getElementById('install-app-btn');
-    const installModal = document.getElementById('install-modal');
-    const closeInstallBtn = document.getElementById('close-install-btn');
-    const okInstallBtn = document.getElementById('ok-install-btn');
-
+    // ÉLÉMENTS DOM APPLICATION
+    const budgetView = document.getElementById('budget-view');
+    const setupView = document.getElementById('setup-view');
+    const dashboardView = document.getElementById('dashboard-view');
+    const tabsContainer = document.getElementById('tabs-container');
+    
+    const goalForm = document.getElementById('goal-form');
+    const depositForm = document.getElementById('deposit-form');
+    const budgetItemForm = document.getElementById('budget-item-form');
+    const resetBtn = document.getElementById('reset-btn');
+    
     const modalOverlay = document.getElementById('modal-overlay');
     const modalCloseBtn = document.getElementById('modal-close-btn');
     const contactModal = document.getElementById('contact-modal');
@@ -547,7 +878,12 @@
     const closeContactBtn = document.getElementById('close-contact-btn');
     const contactForm = document.getElementById('contact-form');
 
-    // GESTION DU BOUTON D'INSTALLATION PWA
+    const installAppBtn = document.getElementById('install-app-btn');
+    const installModal = document.getElementById('install-modal');
+    const closeInstallBtn = document.getElementById('close-install-btn');
+    const okInstallBtn = document.getElementById('ok-install-btn');
+
+    // BOUTON INSTALLATION PWA
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       deferredPrompt = e;
@@ -556,7 +892,9 @@
     installAppBtn.addEventListener('click', () => {
       if (deferredPrompt) {
         deferredPrompt.prompt();
-        deferredPrompt.userChoice.then(() => { deferredPrompt = null; });
+        deferredPrompt.userChoice.then(() => {
+          deferredPrompt = null;
+        });
       } else {
         installModal.classList.remove('hidden');
       }
@@ -594,7 +932,7 @@
 
     logoutBtn.addEventListener('click', () => auth.signOut());
 
-    // ÉCOUTEUR D'ÉTAT DE CONNEXION
+    // ÉCOUTEUR D'ÉTAT DE CONNEXION FIREBASE
     auth.onAuthStateChanged(user => {
       currentUser = user;
       if (user) {
@@ -640,14 +978,42 @@
       const months = Math.floor(diffDays / 30);
       const remainingDays = diffDays % 30;
 
-      if (months === 1) return remainingDays > 0 ? `1 mois et ${remainingDays} jour(s)` : "1 mois";
+      if (months === 1) {
+        return remainingDays > 0 ? `1 mois et ${remainingDays} jour(s)` : "1 mois";
+      }
       return remainingDays > 0 ? `${months} mois et ${remainingDays} jour(s)` : `${months} mois`;
     }
 
-    function triggerCelebration(goal) {
+    function launchConfettiRain() {
       if (typeof confetti === 'function') {
-        confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+        const duration = 2.5 * 1000;
+        const animationEnd = Date.now() + duration;
+
+        const interval = setInterval(function() {
+          const timeLeft = animationEnd - Date.now();
+
+          if (timeLeft <= 0) {
+            return clearInterval(interval);
+          }
+
+          confetti({
+            particleCount: 7,
+            angle: 60,
+            spread: 55,
+            origin: { x: 0, y: 0.6 }
+          });
+          confetti({
+            particleCount: 7,
+            angle: 120,
+            spread: 55,
+            origin: { x: 1, y: 0.6 }
+          });
+        }, 150);
       }
+    }
+
+    function triggerCelebration(goal) {
+      launchConfettiRain();
 
       const durationText = getFormattedDuration(goal.startDate || new Date());
       const message = `Bravo ! Vous avez réussi à économiser <strong>${goal.target.toFixed(2)} €</strong> en <strong>${durationText}</strong>.<br><br>Vous pouvez désormais réaliser l'achat de votre <strong>${goal.title}</strong> ! 🛍️`;
@@ -656,158 +1022,253 @@
       modalOverlay.classList.remove('hidden');
     }
 
-    // GRAPHIQUE BUDGET
-    function updateBudgetChart(savings, income, expenses) {
-      const ctx = document.getElementById('budgetPieChart').getContext('2d');
-      if (budgetChart) budgetChart.destroy();
-      budgetChart = new Chart(ctx, {
-        type: 'pie',
-        data: {
-          labels: ['Épargne (€)', 'Revenus (€)', 'Dépenses (€)'],
-          datasets: [{ data: [savings, income, expenses], backgroundColor: ['#2563eb', '#489b74', '#ef4444'] }]
-        },
-        options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } } } }
-      });
-    }
-
-    // GRAPHIQUE OBJECTIF
-    function updateGoalChart(currentAmount, targetAmount) {
+    // GRAPHIQUE CAMEMBERT OBJECTIF
+    function updateGoalPieChart(currentAmount, targetAmount) {
       const ctx = document.getElementById('goalPieChart').getContext('2d');
       const remainingAmount = Math.max(0, targetAmount - currentAmount);
 
-      if (goalChart) goalChart.destroy();
-      goalChart = new Chart(ctx, {
+      if (goalChartInstance) {
+        goalChartInstance.destroy();
+      }
+
+      goalChartInstance = new Chart(ctx, {
         type: 'doughnut',
         data: {
           labels: ['Économisé (€)', 'Reste à financer (€)'],
-          datasets: [{ data: [currentAmount, remainingAmount], backgroundColor: ['#489b74', '#182a46'] }]
+          datasets: [{
+            data: [currentAmount, remainingAmount],
+            backgroundColor: ['#489b74', '#182a46'],
+            borderWidth: 2,
+            borderColor: '#ffffff'
+          }]
         },
-        options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } } } }
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: { boxWidth: 12, font: { size: 11 } }
+            }
+          }
+        }
+      });
+    }
+
+    // GRAPHIQUE CAMEMBERT BUDGET GLOBAL
+    function updateBudgetPieChart(savings, income, expenses) {
+      const ctx = document.getElementById('budgetPieChart').getContext('2d');
+
+      if (budgetChartInstance) {
+        budgetChartInstance.destroy();
+      }
+
+      budgetChartInstance = new Chart(ctx, {
+        type: 'pie',
+        data: {
+          labels: ['Épargne (€)', 'Revenus (€)', 'Dépenses (€)'],
+          datasets: [{
+            data: [savings, income, expenses],
+            backgroundColor: ['#3b82f6', '#10b981', '#ef4444'],
+            borderWidth: 2,
+            borderColor: '#ffffff'
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: { boxWidth: 12, font: { size: 11 } }
+            }
+          }
+        }
       });
     }
 
     function renderBudget() {
       const items = state.budget.items || [];
-      let savings = 0, income = 0, expenses = 0;
-      items.forEach(i => {
-        if (i.type === 'savings') savings += i.amount;
-        if (i.type === 'income') income += i.amount;
-        if (i.type === 'expense') expenses += i.amount;
+
+      let totalSavings = 0;
+      let totalIncome = 0;
+      let totalExpenses = 0;
+
+      items.forEach(item => {
+        if (item.type === 'savings') totalSavings += item.amount;
+        if (item.type === 'income') totalIncome += item.amount;
+        if (item.type === 'expense') totalExpenses += item.amount;
       });
 
-      document.getElementById('b-total-savings').textContent = savings.toLocaleString('fr-FR') + ' €';
-      document.getElementById('b-total-income').textContent = '+' + income.toLocaleString('fr-FR') + ' €';
-      document.getElementById('b-total-expenses').textContent = '-' + expenses.toLocaleString('fr-FR') + ' €';
-      document.getElementById('b-net-monthly').textContent = (income - expenses).toLocaleString('fr-FR') + ' €';
+      const netMonthly = totalIncome - totalExpenses;
 
-      updateBudgetChart(savings, income, expenses);
+      document.getElementById('b-total-savings').textContent = totalSavings.toLocaleString('fr-FR') + ' €';
+      document.getElementById('b-total-income').textContent = '+' + totalIncome.toLocaleString('fr-FR') + ' €';
+      document.getElementById('b-total-expenses').textContent = '-' + totalExpenses.toLocaleString('fr-FR') + ' €';
+      
+      const netElem = document.getElementById('b-net-monthly');
+      netElem.textContent = (netMonthly >= 0 ? '+' : '') + netMonthly.toLocaleString('fr-FR') + ' €';
+      netElem.className = 'budget-card-value ' + (netMonthly >= 0 ? 'value-income' : 'value-expense');
 
-      const list = document.getElementById('budget-items-list');
-      list.innerHTML = '';
-      items.forEach((item, index) => {
+      updateBudgetPieChart(totalSavings, totalIncome, totalExpenses);
+
+      const listElem = document.getElementById('budget-items-list');
+      listElem.innerHTML = '';
+
+      items.forEach(item => {
         const li = document.createElement('li');
         li.className = 'history-item';
-        li.innerHTML = `<span><strong>${item.name}</strong></span> <span>${item.amount.toLocaleString('fr-FR')} € <button onclick="deleteBudgetItem(${index})" style="width:auto; background:none; color:red; border:none; cursor:pointer; font-weight:bold;">&times;</button></span>`;
-        list.appendChild(li);
+
+        let tagClass = 'tag-savings';
+        let typeName = 'Épargne';
+        let prefix = '';
+
+        if (item.type === 'income') {
+          tagClass = 'tag-income';
+          typeName = 'Revenu';
+          prefix = '+';
+        } else if (item.type === 'expense') {
+          tagClass = 'tag-expense';
+          typeName = 'Dépense';
+          prefix = '-';
+        }
+
+        li.innerHTML = `
+          <div>
+            <span class="item-tag ${tagClass}">${typeName}</span>
+            <strong style="margin-left: 6px;">${item.name}</strong>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span><strong>${prefix}${item.amount.toLocaleString('fr-FR')} €</strong></span>
+            <button class="btn-del-item" onclick="deleteBudgetItem('${item.id}')">&times;</button>
+          </div>
+        `;
+        listElem.appendChild(li);
       });
     }
 
-    window.deleteBudgetItem = function(index) {
-      state.budget.items.splice(index, 1);
+    function deleteBudgetItem(id) {
+      state.budget.items = state.budget.items.filter(i => i.id !== id);
       saveState();
-    };
+      renderBudget();
+    }
 
-    document.getElementById('budget-item-form').addEventListener('submit', (e) => {
+    budgetItemForm.addEventListener('submit', (e) => {
       e.preventDefault();
       const type = document.getElementById('b-item-type').value;
       const name = document.getElementById('b-item-name').value;
       const amount = parseFloat(document.getElementById('b-item-amount').value);
-      state.budget.items.push({ type, name, amount });
-      saveState();
-      e.target.reset();
+
+      if (name && amount > 0) {
+        state.budget.items.push({
+          id: Date.now().toString(),
+          type,
+          name,
+          amount
+        });
+        saveState();
+        renderBudget();
+        budgetItemForm.reset();
+      }
     });
 
     function renderTabs() {
-      const tabsContainer = document.getElementById('tabs-container');
       tabsContainer.innerHTML = '';
-      
-      const bBtn = document.createElement('button');
-      bBtn.className = `tab-btn budget-tab ${state.activeGoalId === 'BUDGET' ? 'active' : ''}`;
-      bBtn.innerHTML = `<span>📊</span> <span>Budget Global</span>`;
-      bBtn.onclick = () => { state.activeGoalId = 'BUDGET'; render(); };
-      tabsContainer.appendChild(bBtn);
+      tabsContainer.classList.remove('hidden');
 
-      state.goals.forEach(g => {
+      // 1. ONGLET FIXE BUDGET GLOBAL
+      const budgetBtn = document.createElement('button');
+      budgetBtn.className = `tab-btn budget-tab ${state.activeGoalId === 'BUDGET' ? 'active' : ''}`;
+      budgetBtn.innerHTML = `<span>📊</span> <span>Budget Global</span>`;
+      budgetBtn.onclick = () => {
+        state.activeGoalId = 'BUDGET';
+        saveState();
+        render();
+      };
+      tabsContainer.appendChild(budgetBtn);
+
+      // 2. ONGLETS DES OBJECTIFS
+      state.goals.forEach(goal => {
         const btn = document.createElement('button');
-        btn.className = `tab-btn ${g.id === state.activeGoalId ? 'active' : ''}`;
-        btn.innerHTML = `<span>${g.emoji || '🎯'}</span> <span>${g.title}</span>`;
-        btn.onclick = () => { state.activeGoalId = g.id; render(); };
+        btn.className = `tab-btn ${goal.id === state.activeGoalId ? 'active' : ''}`;
+        btn.innerHTML = `<span>${goal.emoji || '🎯'}</span> <span>${goal.title}</span>`;
+        btn.onclick = () => {
+          state.activeGoalId = goal.id;
+          saveState();
+          render();
+        };
         tabsContainer.appendChild(btn);
       });
 
+      // 3. ONGLET AJOUTER UN OBJECTIF ("Nouvel objectif")
       const addBtn = document.createElement('button');
       addBtn.className = `tab-btn add-btn ${state.activeGoalId === 'NEW' ? 'active' : ''}`;
       addBtn.innerHTML = `<span>➕</span> <span>Nouvel objectif</span>`;
-      addBtn.onclick = () => { state.activeGoalId = 'NEW'; render(); };
+      addBtn.onclick = () => {
+        state.activeGoalId = 'NEW';
+        saveState();
+        render();
+      };
       tabsContainer.appendChild(addBtn);
     }
 
     function render() {
       renderTabs();
-      const bView = document.getElementById('budget-view');
-      const sView = document.getElementById('setup-view');
-      const dView = document.getElementById('dashboard-view');
-
-      bView.classList.add('hidden');
-      sView.classList.add('hidden');
-      dView.classList.add('hidden');
 
       if (state.activeGoalId === 'BUDGET') {
-        bView.classList.remove('hidden');
+        budgetView.classList.remove('hidden');
+        setupView.classList.add('hidden');
+        dashboardView.classList.add('hidden');
         renderBudget();
-      } else if (state.activeGoalId === 'NEW') {
-        sView.classList.remove('hidden');
+        return;
+      }
+
+      budgetView.classList.add('hidden');
+      const activeGoal = state.goals.find(g => g.id === state.activeGoalId);
+
+      if (!activeGoal || state.activeGoalId === 'NEW') {
+        setupView.classList.remove('hidden');
+        dashboardView.classList.add('hidden');
+        goalForm.reset();
+        document.getElementById('goal-emoji').value = '🎯';
       } else {
-        const goal = state.goals.find(g => g.id === state.activeGoalId);
-        if (goal) {
-          dView.classList.remove('hidden');
-          document.getElementById('display-title').textContent = goal.title;
-          document.getElementById('display-current').textContent = goal.current.toFixed(2);
-          document.getElementById('display-target').textContent = goal.target.toFixed(2) + ' €';
+        setupView.classList.add('hidden');
+        dashboardView.classList.remove('hidden');
 
-          const imgElem = document.getElementById('display-image');
-          const imgContainer = document.getElementById('image-container');
-          const emojiElem = document.getElementById('display-emoji');
+        document.getElementById('display-title').textContent = activeGoal.title;
+        document.getElementById('display-current').textContent = activeGoal.current.toFixed(2);
+        document.getElementById('display-target').textContent = activeGoal.target.toFixed(2) + ' €';
 
-          if (goal.image) {
-            imgElem.src = goal.image;
-            imgContainer.classList.remove('hidden');
-            emojiElem.classList.add('hidden');
-          } else {
-            imgContainer.classList.add('hidden');
-            emojiElem.classList.remove('hidden');
-            emojiElem.textContent = goal.emoji || '🎯';
-          }
+        const imgElem = document.getElementById('display-image');
+        const imgContainer = document.getElementById('image-container');
+        const emojiElem = document.getElementById('display-emoji');
 
-          const percentage = Math.min(100, (goal.current / goal.target) * 100);
-          document.getElementById('progress-bar').style.width = percentage + '%';
-          document.getElementById('display-percent').textContent = percentage.toFixed(1) + '% complété';
-
-          updateGoalChart(goal.current, goal.target);
-
-          const historyList = document.getElementById('history-list');
-          historyList.innerHTML = '';
-          (goal.history || []).slice().reverse().forEach(item => {
-            const li = document.createElement('li');
-            li.className = 'history-item';
-            li.innerHTML = `<span>${item.date}</span><strong>+${item.amount.toFixed(2)} €</strong>`;
-            historyList.appendChild(li);
-          });
+        if (activeGoal.image) {
+          imgElem.src = activeGoal.image;
+          imgContainer.classList.remove('hidden');
+          emojiElem.classList.add('hidden');
+        } else {
+          imgContainer.classList.add('hidden');
+          emojiElem.classList.remove('hidden');
+          emojiElem.textContent = activeGoal.emoji || '🎯';
         }
+
+        const percentage = Math.min(100, (activeGoal.current / activeGoal.target) * 100);
+        document.getElementById('progress-bar').style.width = percentage + '%';
+        document.getElementById('display-percent').textContent = percentage.toFixed(1) + '% complété';
+
+        updateGoalPieChart(activeGoal.current, activeGoal.target);
+
+        const historyList = document.getElementById('history-list');
+        historyList.innerHTML = '';
+        (activeGoal.history || []).slice().reverse().forEach(item => {
+          const li = document.createElement('li');
+          li.className = 'history-item';
+          li.innerHTML = `<span>${item.date}</span><strong>+${item.amount.toFixed(2)} €</strong>`;
+          historyList.appendChild(li);
+        });
       }
     }
 
-    document.getElementById('goal-form').addEventListener('submit', (e) => {
+    goalForm.addEventListener('submit', (e) => {
       e.preventDefault();
       const title = document.getElementById('goal-name').value;
       const target = parseFloat(document.getElementById('goal-target').value);
@@ -832,7 +1293,7 @@
         state.goals.push(newGoal);
         state.activeGoalId = newId;
         saveState();
-        document.getElementById('goal-form').reset();
+        render();
       };
 
       if (fileInput.files && fileInput.files[0]) {
@@ -844,28 +1305,39 @@
       }
     });
 
-    document.getElementById('deposit-form').addEventListener('submit', (e) => {
+    depositForm.addEventListener('submit', (e) => {
       e.preventDefault();
-      const amount = parseFloat(document.getElementById('deposit-amount').value);
-      const goal = state.goals.find(g => g.id === state.activeGoalId);
+      const amountInput = document.getElementById('deposit-amount');
+      const amount = parseFloat(amountInput.value);
 
-      if (goal && amount > 0) {
-        goal.current += amount;
-        if (!goal.history) goal.history = [];
-        goal.history.push({ amount, date: new Date().toLocaleDateString('fr-FR') });
+      const activeGoal = state.goals.find(g => g.id === state.activeGoalId);
 
-        if (goal.current >= goal.target && !goal.completed) {
-          goal.completed = true;
-          triggerCelebration(goal);
+      if (activeGoal && amount > 0) {
+        activeGoal.current += amount;
+        if (!activeGoal.history) activeGoal.history = [];
+        activeGoal.history.push({
+          amount,
+          date: new Date().toLocaleDateString('fr-FR')
+        });
+
+        if (activeGoal.current >= activeGoal.target && !activeGoal.completed) {
+          activeGoal.completed = true;
+          triggerCelebration(activeGoal);
         }
 
         saveState();
-        document.getElementById('deposit-amount').value = '';
+        render();
+        amountInput.value = '';
       }
     });
 
-    openContactBtn.addEventListener('click', () => contactModal.classList.remove('hidden'));
-    closeContactBtn.addEventListener('click', () => contactModal.classList.add('hidden'));
+    openContactBtn.addEventListener('click', () => {
+      contactModal.classList.remove('hidden');
+    });
+
+    closeContactBtn.addEventListener('click', () => {
+      contactModal.classList.add('hidden');
+    });
 
     contactForm.addEventListener('submit', (e) => {
       e.preventDefault();
@@ -881,14 +1353,17 @@
       contactForm.reset();
     });
 
-    modalCloseBtn.addEventListener('click', () => modalOverlay.classList.add('hidden'));
+    modalCloseBtn.addEventListener('click', () => {
+      modalOverlay.classList.add('hidden');
+    });
 
-    document.getElementById('reset-btn').addEventListener('click', () => {
+    resetBtn.addEventListener('click', () => {
       const activeGoal = state.goals.find(g => g.id === state.activeGoalId);
       if (activeGoal && confirm(`Voulez-vous vraiment supprimer l'objectif "${activeGoal.title}" ?`)) {
         state.goals = state.goals.filter(g => g.id !== state.activeGoalId);
         state.activeGoalId = 'BUDGET';
         saveState();
+        render();
       }
     });
   </script>
